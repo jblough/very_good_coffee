@@ -14,7 +14,6 @@ class FavoriteButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO(me): Update the favorite button when the user refreshes
     final l10n = context.l10n;
 
     return StreamBuilder(
@@ -26,7 +25,7 @@ class FavoriteButton extends StatelessWidget {
           tooltip:
               isFavorite ? l10n.tapToRemoveFavorite : l10n.tapToAddFavorite,
           child: Icon(
-            isFavorite ? Icons.favorite_outline : Icons.favorite,
+            isFavorite ? Icons.favorite : Icons.favorite_outline,
           ),
           onPressed: () {
             if (isFavorite) {

@@ -25,67 +25,69 @@ class _CoffeePageState extends State<CoffeePage> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<String?>(
-      stream: widget.coffeeRepository.currentImage,
-      builder: (_, snapshot) {
-        final url = snapshot.data;
-        return Scaffold(
-          body: Stack(
-            children: [
-              Center(
-                child: (url == null)
-                    ? const CircularProgressIndicator.adaptive()
-                    : SourceAwareImage(url: url),
-              ),
-              if (url != null)
+    return SafeArea(
+      child: StreamBuilder<String?>(
+        stream: widget.coffeeRepository.currentImage,
+        builder: (_, snapshot) {
+          final url = snapshot.data;
+          return Scaffold(
+            body: Stack(
+              children: [
+                Center(
+                  child: (url == null)
+                      ? const CircularProgressIndicator.adaptive()
+                      : SourceAwareImage(url: url),
+                ),
+                if (url != null)
+                  Positioned(
+                    top: 16,
+                    left: 16,
+                    child: FavoriteButton(
+                      url: url,
+                      coffeeRepository: widget.coffeeRepository,
+                    ),
+                  ),
                 Positioned(
                   top: 16,
-                  left: 16,
-                  child: FavoriteButton(
-                    url: url,
-                    coffeeRepository: widget.coffeeRepository,
+                  right: 16,
+                  child: FloatingActionButton.small(
+                    shape: const CircleBorder(),
+                    tooltip: context.l10n.tapToDownload,
+                    child: const Icon(Icons.refresh),
+                    onPressed: () => widget.coffeeRepository.refreshImage(),
                   ),
                 ),
-              Positioned(
-                top: 16,
-                right: 16,
-                child: FloatingActionButton.small(
-                  shape: const CircleBorder(),
-                  tooltip: context.l10n.tapToDownload,
-                  child: const Icon(Icons.refresh),
-                  onPressed: () => widget.coffeeRepository.refreshImage(),
+                Positioned(
+                  bottom: 16,
+                  left: 16,
+                  child: StreamBuilder<List<String>>(
+                    stream: widget.coffeeRepository.favorites,
+                    builder: (context, snapshot) {
+                      final hasFavorites = snapshot.data?.isNotEmpty ?? false;
+                      if (!hasFavorites) {
+                        return const SizedBox.shrink();
+                      }
+                      return FloatingActionButton.small(
+                        shape: const CircleBorder(),
+                        tooltip: context.l10n.tapToViewFavorites,
+                        child: const Icon(Icons.photo_library_outlined),
+                        onPressed: () {
+                          Scaffold.of(context).showBottomSheet(
+                            elevation: 0,
+                            (BuildContext context) => FavoritesFooter(
+                              coffeeRepository: widget.coffeeRepository,
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
-              ),
-              Positioned(
-                bottom: 16,
-                left: 16,
-                child: StreamBuilder<List<String>>(
-                  stream: widget.coffeeRepository.favorites,
-                  builder: (context, snapshot) {
-                    final hasFavorites = snapshot.data?.isNotEmpty ?? false;
-                    if (!hasFavorites) {
-                      return const SizedBox.shrink();
-                    }
-                    return FloatingActionButton.small(
-                      shape: const CircleBorder(),
-                      tooltip: context.l10n.tapToViewFavorites,
-                      child: const Icon(Icons.photo_library_outlined),
-                      onPressed: () {
-                        Scaffold.of(context).showBottomSheet(
-                          elevation: 0,
-                          (BuildContext context) => FavoritesFooter(
-                            coffeeRepository: widget.coffeeRepository,
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
