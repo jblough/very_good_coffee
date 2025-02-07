@@ -51,7 +51,7 @@ void main() {
 
       await IOOverrides.runZoned(
         () async {
-          final storage = LocalStorage(client: client);
+          final storage = LocalStorage(subdirectory: 'subdir', client: client);
           final local = await storage.downloadFile('https://test.com/test.png');
 
           // Check that the file was downloaded
@@ -63,7 +63,7 @@ void main() {
           // Check that the correct data what written to the file
           verify(() => file.writeAsBytes('image-content'.codeUnits));
 
-          expect(local, 'fake-directory/test.png');
+          expect(local, 'fake-directory/subdir/test.png');
         },
         createDirectory: (String path) => directory,
         createFile: (String path) => file,
@@ -77,7 +77,7 @@ void main() {
 
       await IOOverrides.runZoned(
         () async {
-          final storage = LocalStorage(client: client);
+          final storage = LocalStorage(subdirectory: 'subdir', client: client);
           final local = await storage.downloadFile('https://test.com/test.png');
 
           // Check that the file was downloaded
@@ -106,7 +106,7 @@ void main() {
 
       await IOOverrides.runZoned(
         () async {
-          final storage = LocalStorage(client: client);
+          final storage = LocalStorage(subdirectory: 'subdir', client: client);
           final local = await storage.downloadFile('https://test.com/test.png');
 
           // Check that the file was downloaded
@@ -136,7 +136,7 @@ void main() {
 
       await IOOverrides.runZoned(
         () async {
-          final storage = LocalStorage(client: client);
+          final storage = LocalStorage(subdirectory: 'subdir', client: client);
           final local = await storage.downloadFile('https://test.com/test.png');
 
           // Check that the file was downloaded
@@ -164,8 +164,8 @@ void main() {
 
       await IOOverrides.runZoned(
         () async {
-          final storage = LocalStorage(client: client);
-          final fileList = await storage.loadFileList('subdir');
+          final storage = LocalStorage(subdirectory: 'subdir', client: client);
+          final fileList = await storage.loadFileList();
 
           expect(fileList, ['a', 'b']);
         },
@@ -179,8 +179,8 @@ void main() {
 
       await IOOverrides.runZoned(
         () async {
-          final storage = LocalStorage(client: client);
-          final fileList = await storage.loadFileList('subdir');
+          final storage = LocalStorage(subdirectory: 'subdir', client: client);
+          final fileList = await storage.loadFileList();
 
           verifyNever(directory.listSync);
 
@@ -198,8 +198,8 @@ void main() {
 
       await IOOverrides.runZoned(
         () async {
-          final storage = LocalStorage(client: client);
-          final fileList = await storage.loadFileList('subdir');
+          final storage = LocalStorage(subdirectory: 'subdir', client: client);
+          final fileList = await storage.loadFileList();
 
           expect(fileList, <String>[]);
         },
@@ -215,8 +215,8 @@ void main() {
 
       await IOOverrides.runZoned(
         () async {
-          final storage = LocalStorage(client: client);
-          await storage.removeFile('fake-directory/test-file');
+          final storage = LocalStorage(subdirectory: 'subdir', client: client);
+          await storage.removeFile('fake-directory/subdir/test-file');
 
           verify(file.delete);
         },
@@ -228,7 +228,7 @@ void main() {
     test('should not delete file in wrong directory', () async {
       await IOOverrides.runZoned(
         () async {
-          final storage = LocalStorage(client: client);
+          final storage = LocalStorage(subdirectory: 'subdir', client: client);
           await storage.removeFile('different-fake-directory/test-file');
 
           verifyNever(file.delete);

@@ -5,7 +5,8 @@ import 'package:rxdart/rxdart.dart';
 class CoffeeRepository {
   CoffeeRepository({CoffeeApiClient? api, LocalStorage? localStorage})
       : _api = api ?? CoffeeApiClient(),
-        _localStorage = localStorage ?? LocalStorage();
+        _localStorage =
+            localStorage ?? LocalStorage(subdirectory: _favoritesDirectory);
 
   final CoffeeApiClient _api;
   final LocalStorage _localStorage;
@@ -33,11 +34,11 @@ class CoffeeRepository {
 
   // Save a coffee image locally
   Future<String?> saveLocally(String url) async {
-    return _localStorage.downloadFile(url, subdirectory: _favoritesDirectory);
+    return _localStorage.downloadFile(url);
   }
 
   Future<void> loadFavorites() async {
-    final favorites = await _localStorage.loadFileList(_favoritesDirectory);
+    final favorites = await _localStorage.loadFileList();
     _favoritesStream.add(favorites);
 
     // If an image has not been download yet, set the current image
@@ -61,10 +62,7 @@ class CoffeeRepository {
     // Check that the file url/path isn't already a favorite
     if (!isFavorite(url)) {
       final currentFavorites = _favoritesStream.value;
-      final localPath = await _localStorage.downloadFile(
-        url,
-        subdirectory: _favoritesDirectory,
-      );
+      final localPath = await _localStorage.downloadFile(url);
       if (localPath != null) {
         currentFavorites.add(localPath);
         _favoritesStream.add(currentFavorites);

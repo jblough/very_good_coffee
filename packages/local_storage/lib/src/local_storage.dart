@@ -4,18 +4,20 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
 class LocalStorage {
-  LocalStorage({http.Client? client}) : _client = client ?? http.Client();
+  LocalStorage({
+    required this.subdirectory,
+    http.Client? client,
+  }) : _client = client ?? http.Client();
 
   final http.Client _client;
+  final String subdirectory;
 
   // TODO(me): Look at using exceptions for better error handling
 
-  Future<String?> downloadFile(String url, {String? subdirectory}) async {
+  Future<String?> downloadFile(String url) async {
     final filename = url.split('/').last;
     final directory = await getApplicationCacheDirectory();
-    final destinationPath = (subdirectory != null)
-        ? '${directory.path}/$subdirectory/$filename'
-        : '${directory.path}/$filename';
+    final destinationPath = '${directory.path}/$subdirectory/$filename';
     var destination = File.fromUri(Uri.parse(destinationPath));
     try {
       final response = await _client.get(Uri.parse(url));
@@ -30,7 +32,7 @@ class LocalStorage {
     return null;
   }
 
-  Future<List<String>> loadFileList(String subdirectory) async {
+  Future<List<String>> loadFileList() async {
     final path = (await getApplicationCacheDirectory()).path;
     final directory = Directory('$path/$subdirectory');
     if (directory.existsSync()) {
@@ -41,8 +43,9 @@ class LocalStorage {
 
   Future<void> removeFile(String url) async {
     final path = await getApplicationCacheDirectory();
+    final acceptablePath = '${path.path}/$subdirectory';
     // Make sure we're only deleting from the expected directory
-    if (url.startsWith(path.path)) {
+    if (url.startsWith(acceptablePath)) {
       final file = File(url);
       await file.delete();
     }
