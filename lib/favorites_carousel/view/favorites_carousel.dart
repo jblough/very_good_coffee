@@ -2,15 +2,16 @@ import 'dart:io';
 
 import 'package:coffee_repository/coffee_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:very_good_coffee/l10n/l10n.dart';
 
-class FavoritesFooter extends StatelessWidget {
-  const FavoritesFooter({required this.coffeeRepository, super.key});
-
-  final CoffeeRepository coffeeRepository;
+class FavoritesCarousel extends StatelessWidget {
+  const FavoritesCarousel({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final coffeeRepository = context.read<CoffeeRepository>();
+
     return SizedBox(
       height: 200,
       child: Stack(

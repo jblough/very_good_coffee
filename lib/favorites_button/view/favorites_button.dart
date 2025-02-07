@@ -1,20 +1,17 @@
 import 'package:coffee_repository/coffee_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:very_good_coffee/l10n/l10n.dart';
 
 class FavoriteButton extends StatelessWidget {
-  const FavoriteButton({
-    required this.url,
-    required this.coffeeRepository,
-    super.key,
-  });
+  const FavoriteButton({required this.url, super.key});
 
   final String url;
-  final CoffeeRepository coffeeRepository;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final coffeeRepository = context.read<CoffeeRepository>();
 
     return StreamBuilder(
       stream: coffeeRepository.favorites,

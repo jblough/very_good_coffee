@@ -37,10 +37,7 @@ class SourceAwareImage extends StatelessWidget {
         },
       );
     } else {
-      return Image.file(
-        File(url),
-        gaplessPlayback: true,
-      );
+      return Image.file(File(url));
     }
   }
 }

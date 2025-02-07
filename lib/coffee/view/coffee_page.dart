@@ -1,33 +1,34 @@
 import 'package:coffee_repository/coffee_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:very_good_coffee/coffee/widgets/favorites_button.dart';
-import 'package:very_good_coffee/coffee/widgets/favorites_footer.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:very_good_coffee/coffee/widgets/source_aware_image.dart';
+import 'package:very_good_coffee/favorites_button/view/favorites_button.dart';
+import 'package:very_good_coffee/favorites_carousel/view/favorites_carousel.dart';
 import 'package:very_good_coffee/l10n/l10n.dart';
 
 class CoffeePage extends StatefulWidget {
-  const CoffeePage({required this.coffeeRepository, super.key});
-
-  final CoffeeRepository coffeeRepository;
+  const CoffeePage({super.key});
 
   @override
   State<CoffeePage> createState() => _CoffeePageState();
 }
 
 class _CoffeePageState extends State<CoffeePage> {
+  late final coffeeRepository = context.read<CoffeeRepository>();
   @override
   void initState() {
     super.initState();
 
-    widget.coffeeRepository.refreshImage();
-    widget.coffeeRepository.loadFavorites();
+    coffeeRepository
+      ..refreshImage()
+      ..loadFavorites();
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: StreamBuilder<String?>(
-        stream: widget.coffeeRepository.currentImage,
+        stream: coffeeRepository.currentImage,
         builder: (_, snapshot) {
           final url = snapshot.data;
           return Scaffold(
@@ -42,10 +43,7 @@ class _CoffeePageState extends State<CoffeePage> {
                   Positioned(
                     top: 16,
                     left: 16,
-                    child: FavoriteButton(
-                      url: url,
-                      coffeeRepository: widget.coffeeRepository,
-                    ),
+                    child: FavoriteButton(url: url),
                   ),
                 Positioned(
                   top: 16,
@@ -54,14 +52,14 @@ class _CoffeePageState extends State<CoffeePage> {
                     shape: const CircleBorder(),
                     tooltip: context.l10n.tapToDownload,
                     child: const Icon(Icons.refresh),
-                    onPressed: () => widget.coffeeRepository.refreshImage(),
+                    onPressed: () => coffeeRepository.refreshImage(),
                   ),
                 ),
                 Positioned(
                   bottom: 16,
                   left: 16,
                   child: StreamBuilder<List<String>>(
-                    stream: widget.coffeeRepository.favorites,
+                    stream: coffeeRepository.favorites,
                     builder: (context, snapshot) {
                       final hasFavorites = snapshot.data?.isNotEmpty ?? false;
                       if (!hasFavorites) {
@@ -74,9 +72,7 @@ class _CoffeePageState extends State<CoffeePage> {
                         onPressed: () {
                           Scaffold.of(context).showBottomSheet(
                             elevation: 0,
-                            (BuildContext context) => FavoritesFooter(
-                              coffeeRepository: widget.coffeeRepository,
-                            ),
+                            (BuildContext context) => const FavoritesCarousel(),
                           );
                         },
                       );

@@ -1,5 +1,6 @@
 import 'package:coffee_repository/coffee_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:very_good_coffee/coffee/view/coffee_page.dart';
 import 'package:very_good_coffee/l10n/l10n.dart';
 
@@ -12,15 +13,17 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        appBarTheme: AppBarTheme(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        ),
+        colorSchemeSeed: const Color(0xFF472D05),
+        brightness: Brightness.dark,
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home: Scaffold(body: CoffeePage(coffeeRepository: coffeeRepository)),
+      home: RepositoryProvider<CoffeeRepository>.value(
+        value: coffeeRepository,
+        child: const Scaffold(body: CoffeePage()),
+      ),
     );
   }
 }
