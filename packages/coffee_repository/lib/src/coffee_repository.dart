@@ -17,7 +17,7 @@ class CoffeeRepository {
     CoffeeApiResponse.error(CoffeeApiResponseStatus.empty),
   );
   final _favoritesStream = BehaviorSubject<List<String>>.seeded([]);
-  final _imageStream = BehaviorSubject<String?>();
+  final _imageStream = BehaviorSubject<String?>.seeded(null);
 
   Stream<CoffeeApiResponse> get coffeeApiResponse => _responseStream;
 
@@ -37,18 +37,13 @@ class CoffeeRepository {
     }
   }
 
-  // Save a coffee image locally
-  Future<String?> saveLocally(String url) async {
-    return _localStorage.downloadFile(url);
-  }
-
   Future<void> loadFavorites() async {
     final favorites = await _localStorage.loadFileList();
     _favoritesStream.add(favorites);
 
     // If an image has not been download yet, set the current image
     if (_imageStream.valueOrNull == null && favorites.isNotEmpty) {
-      _imageStream.add(favorites[Random().nextInt(favorites.length - 1)]);
+      _imageStream.add(favorites[Random().nextInt(favorites.length)]);
     }
   }
 
@@ -75,7 +70,7 @@ class CoffeeRepository {
   }
 
   // Remove a coffee image from the list of favorites
-  void removeFavorite(String url) {
+  Future<void> removeFavorite(String url) async {
     // Extract the filename from the URL to account for the file being
     // a URL or a local file
     final filename = url.split('/').last;
@@ -86,7 +81,7 @@ class CoffeeRepository {
 
     // Remove the favorite from the file system so it doesn't come back
     // the next the the app is launched
-    _localStorage.removeFile(url);
+    await _localStorage.removeFile(url);
   }
 }
 
@@ -97,7 +92,7 @@ extension on String {
   String convertToUrl() {
     if (isLocalPath()) {
       final filename = split('/').last;
-      return 'https://coffee.alexflipnote.dev/$filename';
+      return '$coffeeApiRoot/$filename';
     } else {
       return this;
     }
