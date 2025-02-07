@@ -1,6 +1,8 @@
 import 'package:coffee_repository/coffee_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:very_good_coffee/coffee/view/favorites_footer.dart';
+import 'package:very_good_coffee/coffee/widgets/favorites_button.dart';
+import 'package:very_good_coffee/coffee/widgets/favorites_footer.dart';
+import 'package:very_good_coffee/coffee/widgets/source_aware_image.dart';
 import 'package:very_good_coffee/l10n/l10n.dart';
 
 class CoffeePage extends StatefulWidget {
@@ -26,8 +28,8 @@ class _CoffeePageState extends State<CoffeePage> {
     return StreamBuilder<CoffeeApiResponse>(
       stream: widget.coffeeRepository.coffeeImage,
       builder: (_, snapshot) {
-        // TODO(me): Handle response statuses better (show favorites when
-        //  no network image available)
+        // TODO(me): Handle response statuses better
+        //  (show favorites when no network image available)
         final url = snapshot.data?.url;
         return Scaffold(
           body: Stack(
@@ -35,13 +37,13 @@ class _CoffeePageState extends State<CoffeePage> {
               Center(
                 child: (url == null)
                     ? const CircularProgressIndicator.adaptive()
-                    : Image.network(url),
+                    : SourceAwareImage(url: url),
               ),
               if (url != null)
                 Positioned(
                   top: 16,
                   left: 16,
-                  child: _FavoriteButton(
+                  child: FavoriteButton(
                     url: url,
                     coffeeRepository: widget.coffeeRepository,
                   ),
@@ -59,57 +61,31 @@ class _CoffeePageState extends State<CoffeePage> {
               Positioned(
                 bottom: 16,
                 left: 16,
-                child: FloatingActionButton.small(
-                  shape: const CircleBorder(),
-                  tooltip: context.l10n.tapToViewFavorites,
-                  child: const Icon(Icons.photo_library_outlined),
-                  onPressed: () {
-                    Scaffold.of(context).showBottomSheet(
-                      elevation: 0,
-                      (BuildContext context) => FavoritesFooter(
-                        coffeeRepository: widget.coffeeRepository,
-                      ),
+                child: StreamBuilder<List<String>>(
+                  stream: null,
+                  builder: (context, snapshot) {
+                    final hasFavorites = snapshot.data?.isNotEmpty ?? false;
+                    if (!hasFavorites) {
+                      return const SizedBox.shrink();
+                    }
+                    return FloatingActionButton.small(
+                      shape: const CircleBorder(),
+                      tooltip: context.l10n.tapToViewFavorites,
+                      child: const Icon(Icons.photo_library_outlined),
+                      onPressed: () {
+                        Scaffold.of(context).showBottomSheet(
+                          elevation: 0,
+                          (BuildContext context) => FavoritesFooter(
+                            coffeeRepository: widget.coffeeRepository,
+                          ),
+                        );
+                      },
                     );
                   },
                 ),
               ),
             ],
           ),
-        );
-      },
-    );
-  }
-}
-
-class _FavoriteButton extends StatelessWidget {
-  const _FavoriteButton({required this.url, required this.coffeeRepository});
-
-  final String url;
-  final CoffeeRepository coffeeRepository;
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO(me): Update the favorite button when the user refreshes
-    final l10n = context.l10n;
-
-    return StreamBuilder(
-      stream: coffeeRepository.favorites,
-      builder: (_, snapshot) {
-        final isFavorite = coffeeRepository.isFavorite(url);
-        return FloatingActionButton.small(
-          shape: const CircleBorder(),
-          tooltip:
-              isFavorite ? l10n.tapToRemoveFavorite : l10n.tapToAddFavorite,
-          child: Icon(
-            isFavorite ? Icons.favorite_outline : Icons.favorite,
-          ),
-          onPressed: () {
-            if (isFavorite) {
-              coffeeRepository.removeFavorite(url);
-            } else {
-              coffeeRepository.addFavorite(url);
-            }
-          },
         );
       },
     );
