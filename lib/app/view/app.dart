@@ -1,11 +1,10 @@
 import 'package:coffee_repository/coffee_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:very_good_coffee/coffee/bloc/coffee_cubit.dart';
-import 'package:very_good_coffee/coffee/view/coffee_page.dart';
-import 'package:very_good_coffee/favorites_button/bloc/favorites_button_cubit.dart';
-import 'package:very_good_coffee/favorites_carousel/bloc/favorites_carousel_cubit.dart';
-import 'package:very_good_coffee/favorites_carousel_button/bloc/favorites_carousel_button_cubit.dart';
+import 'package:very_good_coffee/coffee/coffee.dart';
+import 'package:very_good_coffee/favorites_button/favorites_button.dart';
+import 'package:very_good_coffee/favorites_carousel/favorites_carousel.dart';
+import 'package:very_good_coffee/favorites_carousel_button/favorites_carousel_button.dart';
 import 'package:very_good_coffee/l10n/l10n.dart';
 
 class App extends StatelessWidget {
