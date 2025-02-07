@@ -20,6 +20,7 @@ class FavoritesCarousel extends StatelessWidget {
               builder: (context, state) {
                 final files = state.favorites;
                 return CarouselView(
+                  elevation: 0,
                   itemExtent: 200,
                   itemSnapping: true,
                   onTap: (index) => context

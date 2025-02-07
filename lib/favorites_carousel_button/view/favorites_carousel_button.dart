@@ -5,8 +5,16 @@ import 'package:very_good_coffee/favorites_carousel_button/bloc/favorites_carous
 import 'package:very_good_coffee/favorites_carousel_button/bloc/favorites_carousel_button_state.dart';
 import 'package:very_good_coffee/l10n/l10n.dart';
 
-class FavoritesCarouselButton extends StatelessWidget {
+class FavoritesCarouselButton extends StatefulWidget {
   const FavoritesCarouselButton({super.key});
+
+  @override
+  State<FavoritesCarouselButton> createState() =>
+      _FavoritesCarouselButtonState();
+}
+
+class _FavoritesCarouselButtonState extends State<FavoritesCarouselButton> {
+  PersistentBottomSheetController? _controller;
 
   @override
   Widget build(BuildContext context) {
@@ -16,15 +24,23 @@ class FavoritesCarouselButton extends StatelessWidget {
         if (state.favorites.isEmpty) {
           return const SizedBox.shrink();
         }
-        return FloatingActionButton.small(
+        return FloatingActionButton(
           shape: const CircleBorder(),
           tooltip: context.l10n.tapToViewFavorites,
           child: const Icon(Icons.photo_library_outlined),
-          onPressed: () {
-            Scaffold.of(context).showBottomSheet(
+          onPressed: () async {
+            if (_controller != null) {
+              _controller?.close();
+              _controller = null;
+              return;
+            }
+
+            _controller = Scaffold.of(context).showBottomSheet(
               elevation: 0,
               (BuildContext context) => const FavoritesCarousel(),
             );
+            await _controller?.closed;
+            _controller = null;
           },
         );
       },

@@ -32,10 +32,17 @@ class _CoffeePageState extends State<CoffeePage> {
           return Scaffold(
             body: Stack(
               children: [
-                Center(
-                  child: (url == null)
-                      ? const CircularProgressIndicator.adaptive()
-                      : SourceAwareImage(url: url),
+                GestureDetector(
+                  onHorizontalDragEnd: (details) {
+                    if (details.velocity.pixelsPerSecond.dx.abs() > 1000) {
+                      pullDownNewImage(context);
+                    }
+                  },
+                  child: Center(
+                    child: (url == null)
+                        ? const CircularProgressIndicator.adaptive()
+                        : SourceAwareImage(url: url),
+                  ),
                 ),
                 if (url != null)
                   Positioned(
@@ -46,11 +53,11 @@ class _CoffeePageState extends State<CoffeePage> {
                 Positioned(
                   top: 16,
                   right: 16,
-                  child: FloatingActionButton.small(
+                  child: FloatingActionButton(
                     shape: const CircleBorder(),
                     tooltip: context.l10n.tapToDownload,
                     child: const Icon(Icons.refresh),
-                    onPressed: () => context.read<CoffeeCubit>().refreshImage(),
+                    onPressed: () => pullDownNewImage(context),
                   ),
                 ),
                 const Positioned(
@@ -64,5 +71,9 @@ class _CoffeePageState extends State<CoffeePage> {
         },
       ),
     );
+  }
+
+  void pullDownNewImage(BuildContext context) {
+    context.read<CoffeeCubit>().refreshImage();
   }
 }

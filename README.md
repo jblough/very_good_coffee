@@ -13,10 +13,12 @@ A Very Good Project created by Very Good CLI.
 To use the app
 1. Launch the app via the app icon on your phone
 2. Pressing the button on the top right will pull a different random image from the internet
+3. Swiping on the screen should also pull a different random image from the internet
 3. Pressing the button on the top left can be used to download the current image an mark it as a favorite
-   - If the image is already favorite, then tapping the button will remove the image from the favorites
+   - If the image is already a favorite, then tapping the button will remove the image from the favorites
 4. Pressing the button on the bottom left brings up the local images downloaded as favorites
    - If no images are marked as favorites, the button on the button left will not be displayed
+5. Tapping on an image in the list of favorites, displays that image as the current image
 
 ---
 

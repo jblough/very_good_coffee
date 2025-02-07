@@ -17,7 +17,7 @@ class FavoriteButton extends StatelessWidget {
       builder: (context, state) {
         final cubit = context.read<FavoritesButtonCubit>();
         final isFavorite = cubit.isFavorite(url);
-        return FloatingActionButton.small(
+        return FloatingActionButton(
           shape: const CircleBorder(),
           tooltip:
               isFavorite ? l10n.tapToRemoveFavorite : l10n.tapToAddFavorite,
@@ -34,27 +34,5 @@ class FavoriteButton extends StatelessWidget {
         );
       },
     );
-
-    /*return StreamBuilder(
-      stream: coffeeRepository.favorites,
-      builder: (_, snapshot) {
-        final isFavorite = coffeeRepository.isFavorite(url);
-        return FloatingActionButton.small(
-          shape: const CircleBorder(),
-          tooltip:
-              isFavorite ? l10n.tapToRemoveFavorite : l10n.tapToAddFavorite,
-          child: Icon(
-            isFavorite ? Icons.favorite : Icons.favorite_outline,
-          ),
-          onPressed: () {
-            if (isFavorite) {
-              coffeeRepository.removeFavorite(url);
-            } else {
-              coffeeRepository.addFavorite(url);
-            }
-          },
-        );
-      },
-    );*/
   }
 }
