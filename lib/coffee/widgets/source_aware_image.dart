@@ -27,8 +27,20 @@ class SourceAwareImage extends StatelessWidget {
                   opacity: 0.7,
                   child: child,
                 ),
-                CircularProgressIndicator.adaptive(
-                  backgroundColor: Theme.of(context).primaryColor,
+                DecoratedBox(
+                  decoration: ShapeDecoration(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      side: const BorderSide(width: 2),
+                    ),
+                    color: Colors.white,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: CircularProgressIndicator.adaptive(
+                      backgroundColor: Theme.of(context).primaryColor,
+                    ),
+                  ),
                 ),
               ],
             );

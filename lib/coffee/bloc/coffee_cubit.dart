@@ -1,6 +1,14 @@
 import 'package:bloc/bloc.dart';
-import 'package:very_good_coffee/coffee/bloc/coffee_state.dart';
+import 'package:coffee_repository/coffee_repository.dart';
 
-class CoffeeCubit extends Cubit<CoffeeState> {
-  CoffeeCubit(super.initialState);
+class CoffeeCubit extends Cubit<String?> {
+  CoffeeCubit(this.coffeeRepository) : super(null) {
+    coffeeRepository.currentImage.listen(emit);
+  }
+
+  final CoffeeRepository coffeeRepository;
+
+  void refreshImage() {
+    coffeeRepository.refreshImage();
+  }
 }

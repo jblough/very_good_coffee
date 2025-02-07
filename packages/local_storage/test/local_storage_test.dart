@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'package:local_storage/local_storage.dart';
 import 'package:mocktail/mocktail.dart';
@@ -19,8 +18,6 @@ class MockPathProviderPlatform extends Mock
     implements PathProviderPlatform {}
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-
   final client = MockHttpClient();
   final pathProvider = MockPathProviderPlatform();
   final directory = MockDirectory();

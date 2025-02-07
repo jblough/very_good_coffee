@@ -1,6 +1,10 @@
-class CoffeeState {
-  CoffeeState({this.randomImage, this.favorites = const []});
+import 'package:equatable/equatable.dart';
 
-  String? randomImage;
-  List<String> favorites;
+class CoffeeState extends Equatable {
+  const CoffeeState({this.imageUrl});
+
+  final String? imageUrl;
+
+  @override
+  List<Object?> get props => [imageUrl];
 }

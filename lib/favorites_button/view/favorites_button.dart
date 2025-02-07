@@ -1,6 +1,7 @@
-import 'package:coffee_repository/coffee_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:very_good_coffee/favorites_button/bloc/favorites_button_cubit.dart';
+import 'package:very_good_coffee/favorites_button/bloc/favorites_button_state.dart';
 import 'package:very_good_coffee/l10n/l10n.dart';
 
 class FavoriteButton extends StatelessWidget {
@@ -11,9 +12,30 @@ class FavoriteButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final coffeeRepository = context.read<CoffeeRepository>();
 
-    return StreamBuilder(
+    return BlocBuilder<FavoritesButtonCubit, FavoritesButtonState>(
+      builder: (context, state) {
+        final cubit = context.read<FavoritesButtonCubit>();
+        final isFavorite = cubit.isFavorite(url);
+        return FloatingActionButton.small(
+          shape: const CircleBorder(),
+          tooltip:
+              isFavorite ? l10n.tapToRemoveFavorite : l10n.tapToAddFavorite,
+          child: Icon(
+            isFavorite ? Icons.favorite : Icons.favorite_outline,
+          ),
+          onPressed: () {
+            if (isFavorite) {
+              cubit.removeFavorite(url);
+            } else {
+              cubit.addFavorite(url);
+            }
+          },
+        );
+      },
+    );
+
+    /*return StreamBuilder(
       stream: coffeeRepository.favorites,
       builder: (_, snapshot) {
         final isFavorite = coffeeRepository.isFavorite(url);
@@ -33,6 +55,6 @@ class FavoriteButton extends StatelessWidget {
           },
         );
       },
-    );
+    );*/
   }
 }

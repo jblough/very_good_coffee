@@ -1,8 +1,9 @@
 import 'dart:io';
 
-import 'package:coffee_repository/coffee_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:very_good_coffee/favorites_carousel/bloc/favorites_carousel_cubit.dart';
+import 'package:very_good_coffee/favorites_carousel/bloc/favorites_carousel_state.dart';
 import 'package:very_good_coffee/l10n/l10n.dart';
 
 class FavoritesCarousel extends StatelessWidget {
@@ -10,21 +11,20 @@ class FavoritesCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final coffeeRepository = context.read<CoffeeRepository>();
-
     return SizedBox(
       height: 200,
       child: Stack(
         children: [
           Center(
-            child: StreamBuilder<List<String>>(
-              stream: coffeeRepository.favorites,
-              builder: (context, snapshot) {
-                final files = snapshot.data ?? [];
+            child: BlocBuilder<FavoritesCarouselCubit, FavoritesCarouselState>(
+              builder: (context, state) {
+                final files = state.favorites;
                 return CarouselView(
                   itemExtent: 200,
-                  onTap: (index) =>
-                      coffeeRepository.setCurrentImage(files[index]),
+                  itemSnapping: true,
+                  onTap: (index) => context
+                      .read<FavoritesCarouselCubit>()
+                      .setCurrentImage(files[index]),
                   children: <Widget>[
                     for (final file in files) Image.file(File(file)),
                   ],
