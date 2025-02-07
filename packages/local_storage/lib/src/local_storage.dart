@@ -16,17 +16,15 @@ class LocalStorage {
     final destinationPath = (subdirectory != null)
         ? '${directory.path}/$subdirectory/$filename'
         : '${directory.path}/$filename';
-    final destination = File.fromUri(Uri.parse(destinationPath));
+    var destination = File.fromUri(Uri.parse(destinationPath));
     try {
       final response = await _client.get(Uri.parse(url));
       if (response.statusCode == 200) {
-        await destination.create(recursive: true);
-        await destination.writeAsBytes(response.bodyBytes);
+        destination = await destination.create(recursive: true);
+        destination = await destination.writeAsBytes(response.bodyBytes);
         return destinationPath;
       }
     } catch (e) {
-      // TODO(me): Remove this (when confident in this code)
-      print(e);
       return null;
     }
     return null;

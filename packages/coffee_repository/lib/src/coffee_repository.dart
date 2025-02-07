@@ -10,19 +10,25 @@ class CoffeeRepository {
   final CoffeeApiClient _api;
   final LocalStorage _localStorage;
 
-  final _imageUrlStream = BehaviorSubject<CoffeeApiResponse>.seeded(
+  final _responseStream = BehaviorSubject<CoffeeApiResponse>.seeded(
     CoffeeApiResponse.error(CoffeeApiResponseStatus.empty),
   );
   final _favoritesStream = BehaviorSubject<List<String>>.seeded([]);
+  final _imageStream = BehaviorSubject<String?>();
 
-  Stream<CoffeeApiResponse> get coffeeImage => _imageUrlStream;
+  Stream<CoffeeApiResponse> get coffeeApiResponse => _responseStream;
+
+  Stream<String?> get currentImage => _imageStream;
 
   static const _favoritesDirectory = 'favorites';
 
   // Get a random coffee image
   Future<void> refreshImage() async {
     final response = await _api.getRandomImageUrl();
-    _imageUrlStream.add(response);
+    _responseStream.add(response);
+    if (response.url != null) {
+      _imageStream.add(response.url);
+    }
   }
 
   // Save a coffee image locally
@@ -33,6 +39,16 @@ class CoffeeRepository {
   Future<void> loadFavorites() async {
     final favorites = await _localStorage.loadFileList(_favoritesDirectory);
     _favoritesStream.add(favorites);
+
+    // If an image has not been download yet, set the current image
+    if (_imageStream.valueOrNull == null && favorites.isNotEmpty) {
+      // TODO(me): Pick a random image from the list
+      _imageStream.add(favorites[0]);
+    }
+  }
+
+  void setCurrentImage(String url) {
+    _imageStream.add(url);
   }
 
   bool isFavorite(String url) {
@@ -65,6 +81,9 @@ class CoffeeRepository {
         .where((element) => !element.endsWith(filename))
         .toList();
     _favoritesStream.add(filteredList);
+
+    // TODO(me): Think about if the current image should be changed
+    //  since the file is being removed from the filesystem
 
     // Remove the favorite from the file system so it doesn't come back
     // the next the the app is launched

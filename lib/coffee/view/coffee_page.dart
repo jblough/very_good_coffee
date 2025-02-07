@@ -25,12 +25,10 @@ class _CoffeePageState extends State<CoffeePage> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<CoffeeApiResponse>(
-      stream: widget.coffeeRepository.coffeeImage,
+    return StreamBuilder<String?>(
+      stream: widget.coffeeRepository.currentImage,
       builder: (_, snapshot) {
-        // TODO(me): Handle response statuses better
-        //  (show favorites when no network image available)
-        final url = snapshot.data?.url;
+        final url = snapshot.data;
         return Scaffold(
           body: Stack(
             children: [
@@ -62,7 +60,7 @@ class _CoffeePageState extends State<CoffeePage> {
                 bottom: 16,
                 left: 16,
                 child: StreamBuilder<List<String>>(
-                  stream: null,
+                  stream: widget.coffeeRepository.favorites,
                   builder: (context, snapshot) {
                     final hasFavorites = snapshot.data?.isNotEmpty ?? false;
                     if (!hasFavorites) {

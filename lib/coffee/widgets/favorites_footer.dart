@@ -22,6 +22,8 @@ class FavoritesFooter extends StatelessWidget {
                 final files = snapshot.data ?? [];
                 return CarouselView(
                   itemExtent: 200,
+                  onTap: (index) =>
+                      coffeeRepository.setCurrentImage(files[index]),
                   children: <Widget>[
                     for (final file in files) Image.file(File(file)),
                   ],
