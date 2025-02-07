@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:coffee_api/coffee_api.dart';
 import 'package:local_storage/local_storage.dart';
 import 'package:rxdart/rxdart.dart';
@@ -21,6 +23,9 @@ class CoffeeRepository {
 
   Stream<String?> get currentImage => _imageStream;
 
+  // Get a list of favorite coffee images
+  Stream<List<String>> get favorites => _favoritesStream;
+
   static const _favoritesDirectory = 'favorites';
 
   // Get a random coffee image
@@ -43,8 +48,7 @@ class CoffeeRepository {
 
     // If an image has not been download yet, set the current image
     if (_imageStream.valueOrNull == null && favorites.isNotEmpty) {
-      // TODO(me): Pick a random image from the list
-      _imageStream.add(favorites[0]);
+      _imageStream.add(favorites[Random().nextInt(favorites.length - 1)]);
     }
   }
 
@@ -62,7 +66,7 @@ class CoffeeRepository {
     // Check that the file url/path isn't already a favorite
     if (!isFavorite(url)) {
       final currentFavorites = _favoritesStream.value;
-      final localPath = await _localStorage.downloadFile(url);
+      final localPath = await _localStorage.downloadFile(url.convertToUrl());
       if (localPath != null) {
         currentFavorites.add(localPath);
         _favoritesStream.add(currentFavorites);
@@ -80,14 +84,22 @@ class CoffeeRepository {
         .toList();
     _favoritesStream.add(filteredList);
 
-    // TODO(me): Think about if the current image should be changed
-    //  since the file is being removed from the filesystem
-
     // Remove the favorite from the file system so it doesn't come back
     // the next the the app is launched
     _localStorage.removeFile(url);
   }
+}
 
-  // Get a list of favorite coffee images
-  Stream<List<String>> get favorites => _favoritesStream;
+extension on String {
+  bool isLocalPath() => !toLowerCase().startsWith('http');
+
+  /// Convert any local file paths to the original internet location
+  String convertToUrl() {
+    if (isLocalPath()) {
+      final filename = split('/').last;
+      return 'https://coffee.alexflipnote.dev/$filename';
+    } else {
+      return this;
+    }
+  }
 }
