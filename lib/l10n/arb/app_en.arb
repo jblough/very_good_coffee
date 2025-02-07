@@ -1,7 +1,8 @@
 {
     "@@locale": "en",
-    "counterAppBarTitle": "Counter",
-    "@counterAppBarTitle": {
-        "description": "Text shown in the AppBar of the Counter Page"
-    }
+    "tapToAddFavorite": "Add this image to your list of favorite images",
+    "tapToRemoveFavorite": "Remove this image from your list of favorites",
+    "tapToDownload": "Download a different image",
+    "tapToViewFavorites": "View your favorite images",
+    "close": "Close"
 }

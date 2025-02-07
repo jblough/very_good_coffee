@@ -1,7 +1,8 @@
 {
     "@@locale": "es",
-    "counterAppBarTitle": "Contador",
-    "@counterAppBarTitle": {
-        "description": "Texto mostrado en la AppBar de la página del contador"
-    }
+    "tapToAddFavorite": "Añade esta imagen a tu lista de imágenes favoritas",
+    "tapToRemoveFavorite": "Elimina esta imagen de tu lista de favoritos",
+    "tapToDownload": "Descargar una imagen diferente",
+    "tapToViewFavorites": "Ver tus imágenes favoritas",
+    "close": "Cerca"
 }

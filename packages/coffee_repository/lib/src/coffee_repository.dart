@@ -10,19 +10,19 @@ class CoffeeRepository {
   final CoffeeApiClient _api;
   final LocalStorage _localStorage;
 
-  final _imageUrlStream = BehaviorSubject<String?>();
+  final _imageUrlStream = BehaviorSubject<CoffeeApiResponse>.seeded(
+    CoffeeApiResponse.error(CoffeeApiResponseStatus.empty),
+  );
   final _favoritesStream = BehaviorSubject<List<String>>.seeded([]);
 
-  Stream<String?> get coffeeImage => _imageUrlStream;
+  Stream<CoffeeApiResponse> get coffeeImage => _imageUrlStream;
 
   static const _favoritesDirectory = 'favorites';
 
   // Get a random coffee image
   Future<void> refreshImage() async {
-    final url = await _api.getRandomImageUrl();
-    if (url != null) {
-      _imageUrlStream.add(url);
-    }
+    final response = await _api.getRandomImageUrl();
+    _imageUrlStream.add(response);
   }
 
   // Save a coffee image locally
@@ -72,5 +72,5 @@ class CoffeeRepository {
   }
 
   // Get a list of favorite coffee images
-  Stream<List<String>> favorites() => _favoritesStream;
+  Stream<List<String>> get favorites => _favoritesStream;
 }

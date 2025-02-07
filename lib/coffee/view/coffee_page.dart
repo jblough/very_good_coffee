@@ -1,5 +1,7 @@
 import 'package:coffee_repository/coffee_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:very_good_coffee/coffee/view/favorites_footer.dart';
+import 'package:very_good_coffee/l10n/l10n.dart';
 
 class CoffeePage extends StatefulWidget {
   const CoffeePage({required this.coffeeRepository, super.key});
@@ -21,10 +23,12 @@ class _CoffeePageState extends State<CoffeePage> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
+    return StreamBuilder<CoffeeApiResponse>(
       stream: widget.coffeeRepository.coffeeImage,
       builder: (_, snapshot) {
-        final url = snapshot.data;
+        // TODO(me): Handle response statuses better (show favorites when
+        //  no network image available)
+        final url = snapshot.data?.url;
         return Scaffold(
           body: Stack(
             children: [
@@ -47,8 +51,26 @@ class _CoffeePageState extends State<CoffeePage> {
                 right: 16,
                 child: FloatingActionButton.small(
                   shape: const CircleBorder(),
+                  tooltip: context.l10n.tapToDownload,
                   child: const Icon(Icons.refresh),
                   onPressed: () => widget.coffeeRepository.refreshImage(),
+                ),
+              ),
+              Positioned(
+                bottom: 16,
+                left: 16,
+                child: FloatingActionButton.small(
+                  shape: const CircleBorder(),
+                  tooltip: context.l10n.tapToViewFavorites,
+                  child: const Icon(Icons.photo_library_outlined),
+                  onPressed: () {
+                    Scaffold.of(context).showBottomSheet(
+                      elevation: 0,
+                      (BuildContext context) => FavoritesFooter(
+                        coffeeRepository: widget.coffeeRepository,
+                      ),
+                    );
+                  },
                 ),
               ),
             ],
@@ -68,13 +90,16 @@ class _FavoriteButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO(me): Update the favorite button when the user refreshes
-    //  the coffee image
+    final l10n = context.l10n;
+
     return StreamBuilder(
-      stream: coffeeRepository.favorites(),
+      stream: coffeeRepository.favorites,
       builder: (_, snapshot) {
         final isFavorite = coffeeRepository.isFavorite(url);
         return FloatingActionButton.small(
           shape: const CircleBorder(),
+          tooltip:
+              isFavorite ? l10n.tapToRemoveFavorite : l10n.tapToAddFavorite,
           child: Icon(
             isFavorite ? Icons.favorite_outline : Icons.favorite,
           ),

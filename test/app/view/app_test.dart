@@ -18,7 +18,7 @@ void main() {
       when(repository.refreshImage).thenAnswer((_) async {});
       when(repository.loadFavorites).thenAnswer((_) async {});
       when(() => repository.coffeeImage)
-          .thenAnswer((_) => const Stream<String?>.empty());
+          .thenAnswer((_) => const Stream<CoffeeApiResponse>.empty());
 
       await tester.pumpWidget(App(coffeeRepository: repository));
       expect(find.byType(CoffeePage), findsOneWidget);
