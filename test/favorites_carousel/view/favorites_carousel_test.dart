@@ -20,6 +20,11 @@ void main() {
     when(favoritesCarouselCubit.close).thenAnswer((_) async {});
   });
 
+  Widget generateWidget() => addProviders(
+        const FavoritesCarousel(),
+        favoritesCarouselCubit: favoritesCarouselCubit,
+      );
+
   group('FavoritesCarousel tests', () {
     testWidgets('should load', (tester) async {
       final images = ['a.png', 'b.png'];
@@ -28,10 +33,7 @@ void main() {
       when(() => favoritesCarouselCubit.stream)
           .thenAnswer((_) => Stream.value(state));
 
-      final widget = addProviders(
-        const FavoritesCarousel(),
-        favoritesCarouselCubit: favoritesCarouselCubit,
-      );
+      final widget = generateWidget();
       await tester.pumpApp(widget);
       expect(find.byType(CarouselView), findsOneWidget);
       expect(find.byType(Image), findsNWidgets(2));
@@ -45,10 +47,7 @@ void main() {
       when(() => favoritesCarouselCubit.stream)
           .thenAnswer((_) => Stream.value(state));
 
-      final widget = addProviders(
-        const FavoritesCarousel(),
-        favoritesCarouselCubit: favoritesCarouselCubit,
-      );
+      final widget = generateWidget();
       await tester.pumpApp(widget);
       await tester.tap(find.byType(Image).last, warnIfMissed: false);
       await tester.pumpAndSettle();

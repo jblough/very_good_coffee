@@ -4,26 +4,17 @@ import 'package:mocktail/mocktail.dart';
 import 'package:very_good_coffee/coffee/bloc/coffee_state.dart';
 import 'package:very_good_coffee/coffee/coffee.dart';
 import 'package:very_good_coffee/coffee/widgets/source_aware_image.dart';
-import 'package:very_good_coffee/favorite_button/bloc/favorite_button_state.dart';
 import 'package:very_good_coffee/favorite_button/favorite_button.dart';
-import 'package:very_good_coffee/favorites_carousel/bloc/favorites_carousel_state.dart';
-import 'package:very_good_coffee/favorites_carousel_button/bloc/favorites_carousel_button_state.dart';
 
 import '../../helpers/helpers.dart';
 
 void main() {
   final repository = MockCoffeeRepository();
   final coffeeCubit = MockCoffeeCubit();
-  final favoriteButtonCubit = MockFavoriteButtonCubit();
-  final favoritesCarouselButtonCubit = MockFavoritesCarouselButtonCubit();
-  final favoritesCarouselCubit = MockFavoritesCarouselCubit();
 
   setUp(() {
     reset(repository);
     reset(coffeeCubit);
-    reset(favoriteButtonCubit);
-    reset(favoritesCarouselButtonCubit);
-    reset(favoritesCarouselCubit);
 
     // Default values
     when(repository.refreshImage).thenAnswer((_) async {});
@@ -38,27 +29,13 @@ void main() {
     when(() => coffeeCubit.state).thenReturn(state);
     when(() => coffeeCubit.stream).thenAnswer((_) => Stream.value(state));
     when(coffeeCubit.close).thenAnswer((_) async {});
-
-    when(() => favoriteButtonCubit.state)
-        .thenReturn(const FavoriteButtonState());
-    when(() => favoriteButtonCubit.stream)
-        .thenAnswer((_) => Stream.value(const FavoriteButtonState()));
-    when(() => favoriteButtonCubit.isFavorite(any())).thenReturn(false);
-    when(favoriteButtonCubit.close).thenAnswer((_) async {});
-
-    when(() => favoritesCarouselCubit.state)
-        .thenReturn(const FavoritesCarouselState());
-    when(() => favoritesCarouselCubit.stream)
-        .thenAnswer((_) => Stream.value(const FavoritesCarouselState()));
-    when(favoritesCarouselCubit.close).thenAnswer((_) async {});
-
-    when(() => favoritesCarouselButtonCubit.state)
-        .thenReturn(const FavoritesCarouselButtonState());
-    when(() => favoritesCarouselButtonCubit.stream).thenAnswer(
-      (_) => Stream.value(const FavoritesCarouselButtonState()),
-    );
-    when(favoritesCarouselButtonCubit.close).thenAnswer((_) async {});
   });
+
+  Widget generateWidget() => addProviders(
+        const CoffeePage(),
+        coffeeRepository: repository,
+        coffeeCubit: coffeeCubit,
+      );
 
   group('CoffeePage', () {
     testWidgets('should show busy indicator when no image', (tester) async {
@@ -66,28 +43,16 @@ void main() {
       when(() => coffeeCubit.state).thenReturn(state);
       when(() => coffeeCubit.stream).thenAnswer((_) => Stream.value(state));
 
-      final widget = addProviders(
-        const CoffeePage(),
-        coffeeRepository: repository,
-        coffeeCubit: coffeeCubit,
-        favoriteButtonCubit: favoriteButtonCubit,
-        favoritesCarouselButtonCubit: favoritesCarouselButtonCubit,
-        favoritesCarouselCubit: favoritesCarouselCubit,
-      );
+      final widget = generateWidget();
       await tester.pumpApp(widget);
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
       expect(find.byType(FavoriteButton), findsNothing);
     });
 
     testWidgets('should load image', (tester) async {
-      final widget = addProviders(
-        const CoffeePage(),
-        coffeeRepository: repository,
-        coffeeCubit: coffeeCubit,
-        favoriteButtonCubit: favoriteButtonCubit,
-        favoritesCarouselButtonCubit: favoritesCarouselButtonCubit,
-        favoritesCarouselCubit: favoritesCarouselCubit,
-      );
+      when(() => repository.isFavorite(any())).thenReturn(false);
+
+      final widget = generateWidget();
       await tester.pumpApp(widget);
       expect(find.byType(CircularProgressIndicator), findsNothing);
       expect(find.byType(SourceAwareImage), findsOneWidget);

@@ -21,6 +21,11 @@ void main() {
     when(favoritesCarouselButtonCubit.close).thenAnswer((_) async {});
   });
 
+  Widget generateWidget() => addProviders(
+        const FavoritesCarouselButton(),
+        favoritesCarouselButtonCubit: favoritesCarouselButtonCubit,
+      );
+
   group('FavoritesCarouselButton tests', () {
     testWidgets('should see favorites carousel button when there are favorite',
         (tester) async {
@@ -29,10 +34,7 @@ void main() {
       when(() => favoritesCarouselButtonCubit.stream)
           .thenAnswer((_) => Stream.value(state));
 
-      final widget = addProviders(
-        const FavoritesCarouselButton(),
-        favoritesCarouselButtonCubit: favoritesCarouselButtonCubit,
-      );
+      final widget = generateWidget();
       await tester.pumpApp(widget);
       expect(find.byType(FloatingActionButton), findsOneWidget);
     });
@@ -40,10 +42,7 @@ void main() {
     testWidgets(
         'should not see favorites carousel button when there are no favorites',
         (tester) async {
-      final widget = addProviders(
-        const FavoritesCarouselButton(),
-        favoritesCarouselButtonCubit: favoritesCarouselButtonCubit,
-      );
+      final widget = generateWidget();
       await tester.pumpApp(widget);
       expect(find.byType(FloatingActionButton), findsNothing);
     });

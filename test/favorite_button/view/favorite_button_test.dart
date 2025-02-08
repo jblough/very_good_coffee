@@ -21,6 +21,11 @@ void main() {
     when(favoritesButtonCubit.close).thenAnswer((_) async {});
   });
 
+  Widget generateWidget(String url) => addProviders(
+        FavoriteButton(url: url),
+        favoriteButtonCubit: favoritesButtonCubit,
+      );
+
   group('FavoritesButton tests', () {
     testWidgets(
         'should see correct favorite icon and label when not a favorite',
@@ -32,10 +37,7 @@ void main() {
           .thenAnswer((_) => Stream.value(state));
       when(() => favoritesButtonCubit.isFavorite(any())).thenReturn(false);
 
-      final widget = addProviders(
-        const FavoriteButton(url: url),
-        favoriteButtonCubit: favoritesButtonCubit,
-      );
+      final widget = generateWidget(url);
       await tester.pumpApp(widget);
       final button = tester.widget(find.byType(FloatingActionButton))
           as FloatingActionButton;
@@ -54,10 +56,7 @@ void main() {
           .thenAnswer((_) => Stream.value(state));
       when(() => favoritesButtonCubit.isFavorite(any())).thenReturn(true);
 
-      final widget = addProviders(
-        const FavoriteButton(url: url),
-        favoriteButtonCubit: favoritesButtonCubit,
-      );
+      final widget = generateWidget(url);
       await tester.pumpApp(widget);
       final button = tester.widget(find.byType(FloatingActionButton))
           as FloatingActionButton;
