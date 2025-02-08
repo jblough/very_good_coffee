@@ -21,8 +21,8 @@ class _CoffeePageState extends State<CoffeePage> {
     super.initState();
 
     context.read<CoffeeRepository>()
-      ..refreshImage()
-      ..loadFavorites();
+      ..loadFavorites()
+      ..refreshImage();
   }
 
   @override
