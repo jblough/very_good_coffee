@@ -14,6 +14,7 @@ class CoffeeApiClient {
 
   final http.Client _client;
 
+  /// Download a random image URL from the API
   Future<CoffeeApiResponse> getRandomImageUrl() async {
     try {
       final url = Uri.parse(coffeeApiUrl);

@@ -14,6 +14,7 @@ class LocalStorage {
 
   // TODO(me): Look at using exceptions for better error handling
 
+  /// Download a file from the internet and save locally
   Future<String?> downloadFile(String url) async {
     final filename = url.split('/').last;
     final directory = await getApplicationCacheDirectory();
@@ -32,6 +33,7 @@ class LocalStorage {
     return null;
   }
 
+  /// Load a list of all the files in the subdirectory
   Future<List<String>> loadFileList() async {
     final path = (await getApplicationCacheDirectory()).path;
     final directory = Directory('$path/$subdirectory');
@@ -41,6 +43,7 @@ class LocalStorage {
     return [];
   }
 
+  /// Remove the file from local storage
   Future<void> removeFile(String url) async {
     final path = await getApplicationCacheDirectory();
     final acceptablePath = '${path.path}/$subdirectory';

@@ -28,12 +28,14 @@ class CoffeeRepository {
 
   static const _favoritesDirectory = 'favorites';
 
+  /// Initial the data in the repository. This currently loads the
+  /// list of favorite images and downloads a new image from the API.
   void initialize() {
     loadFavorites();
     refreshImage();
   }
 
-  // Get a random coffee image
+  /// Get a random coffee image from the API
   Future<void> refreshImage() async {
     final response = await _api.getRandomImageUrl();
     _responseStream.add(response);
@@ -42,6 +44,7 @@ class CoffeeRepository {
     }
   }
 
+  /// Load list of favorite images saved locally
   Future<void> loadFavorites() async {
     final favorites = await _localStorage.loadFileList();
     _favoritesStream.add(favorites);
@@ -52,11 +55,12 @@ class CoffeeRepository {
     }
   }
 
+  /// Set the image to be displayed
   void setCurrentImage(String url) {
     _imageStream.add(url);
   }
 
-  // Mark a coffee image as a favorite
+  /// Mark a coffee image as a favorite
   Future<void> addFavorite(String url) async {
     // Check that the file url/path isn't already a favorite
     final filename = url.split('/').last.toLowerCase();
@@ -74,7 +78,7 @@ class CoffeeRepository {
     }
   }
 
-  // Remove a coffee image from the list of favorites
+  /// Remove a coffee image from the list of favorites
   Future<void> removeFavorite(String url) async {
     // Extract the filename from the URL to account for the file being
     // a URL or a local file
@@ -91,15 +95,16 @@ class CoffeeRepository {
 }
 
 extension on String {
-  bool isLocalPath() => !toLowerCase().startsWith('http');
+  /// Determine if the given string is a web URL
+  bool isWebUrl() => toLowerCase().startsWith('http');
 
   /// Convert any local file paths to the original internet location
   String convertToUrl() {
-    if (isLocalPath()) {
+    if (isWebUrl()) {
+      return this;
+    } else {
       final filename = split('/').last;
       return '$coffeeApiRoot/$filename';
-    } else {
-      return this;
     }
   }
 }
