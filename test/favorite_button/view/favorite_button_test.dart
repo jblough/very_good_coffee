@@ -36,6 +36,8 @@ void main() {
       when(() => favoritesButtonCubit.stream)
           .thenAnswer((_) => Stream.value(state));
       when(() => favoritesButtonCubit.isFavorite(any())).thenReturn(false);
+      when(() => favoritesButtonCubit.addFavorite(any()))
+          .thenAnswer((_) async {});
 
       final widget = generateWidget(url);
       await tester.pumpApp(widget);
@@ -45,6 +47,11 @@ void main() {
       final icon = tester.widget(find.byType(Icon)) as Icon;
       expect(icon.icon, Icons.favorite_outline);
       verify(() => favoritesButtonCubit.isFavorite(url));
+
+      // Tap on the button to add to favorites
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+      verify(() => favoritesButtonCubit.addFavorite(url));
     });
 
     testWidgets('should see correct favorite icon and label when a favorite',
@@ -55,6 +62,8 @@ void main() {
       when(() => favoritesButtonCubit.stream)
           .thenAnswer((_) => Stream.value(state));
       when(() => favoritesButtonCubit.isFavorite(any())).thenReturn(true);
+      when(() => favoritesButtonCubit.removeFavorite(any()))
+          .thenAnswer((_) async {});
 
       final widget = generateWidget(url);
       await tester.pumpApp(widget);
@@ -64,6 +73,11 @@ void main() {
       final icon = tester.widget(find.byType(Icon)) as Icon;
       expect(icon.icon, Icons.favorite);
       verify(() => favoritesButtonCubit.isFavorite(url));
+
+      // Tap on the button to remove from favorites
+      await tester.tap(find.byType(FloatingActionButton));
+      await tester.pumpAndSettle();
+      verify(() => favoritesButtonCubit.removeFavorite(url));
     });
   });
 }

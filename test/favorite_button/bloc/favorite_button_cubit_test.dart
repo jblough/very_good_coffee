@@ -24,6 +24,7 @@ void main() {
       expect: () => [const FavoriteButtonState()],
       verify: (_) {
         verify(() => repository.addFavorite('a.png')).called(1);
+        verify(repository.loadFavorites).called(1);
       },
     );
 
@@ -41,6 +42,7 @@ void main() {
       expect: () => [const FavoriteButtonState()],
       verify: (_) {
         verify(() => repository.removeFavorite('a.png')).called(1);
+        verify(repository.loadFavorites).called(1);
       },
     );
   });

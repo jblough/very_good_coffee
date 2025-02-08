@@ -58,5 +58,16 @@ void main() {
       expect(find.byType(SourceAwareImage), findsOneWidget);
       expect(find.byType(FavoriteButton), findsOneWidget);
     });
+
+    testWidgets('should refresh image on button press', (tester) async {
+      when(() => repository.isFavorite(any())).thenReturn(false);
+
+      final widget = generateWidget();
+      await tester.pumpApp(widget);
+      await tester.tap(find.byTooltip('Download a different image'));
+      await tester.pumpAndSettle();
+
+      verify(coffeeCubit.refreshImage);
+    });
   });
 }

@@ -11,17 +11,18 @@ void main() {
 
   setUp(() {
     reset(repository);
+
+    // Defaults
+    when(repository.refreshImage).thenAnswer((_) async {});
+    when(repository.loadFavorites).thenAnswer((_) async {});
+    when(() => repository.favorites)
+        .thenAnswer((_) => Stream<List<String>>.value(['a.png']));
+    when(() => repository.currentImage)
+        .thenAnswer((_) => Stream<String?>.value('a.png'));
   });
 
   group('App', () {
     testWidgets('renders CoffeePage', (tester) async {
-      when(repository.refreshImage).thenAnswer((_) async {});
-      when(repository.loadFavorites).thenAnswer((_) async {});
-      when(() => repository.favorites)
-          .thenAnswer((_) => Stream<List<String>>.value([]));
-      when(() => repository.currentImage)
-          .thenAnswer((_) => const Stream<String?>.empty());
-
       await tester.pumpWidget(App(coffeeRepository: repository));
       expect(find.byType(CoffeePage), findsOneWidget);
     });
