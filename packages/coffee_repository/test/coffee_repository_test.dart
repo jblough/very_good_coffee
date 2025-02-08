@@ -138,6 +138,30 @@ void main() {
 
       verify(() => storage.downloadFile(url));
     });
+
+    test('should add local file as favorite', () async {
+      const localUrl = 'cache/subdir/a.png';
+      final favorites = ['cache/subdir/b.png'];
+      when(storage.loadFileList).thenAnswer((_) async => favorites);
+      when(() => storage.downloadFile(any())).thenAnswer((_) async => localUrl);
+
+      final repository = CoffeeRepository(api: client, localStorage: storage);
+
+      // Check initial state
+      expect(repository.favorites, emits([]));
+
+      await repository.loadFavorites();
+      expect(repository.favorites, emits(favorites));
+
+      await repository.addFavorite(localUrl);
+
+      // Check updated state
+      expect(repository.favorites, emits(['cache/subdir/b.png', localUrl]));
+
+      verify(
+        () => storage.downloadFile('https://coffee.alexflipnote.dev/a.png'),
+      );
+    });
   });
 
   group('remove favorite tests', () {

@@ -21,15 +21,14 @@ void main() {
     final status = await api.getRandomImageUrl();
 
     expect(
-      status.url,
-      'https://coffee.alexflipnote.dev/kfPtX_HEchI_coffee.jpg',
+      status,
+      CoffeeApiResponse.ok(
+          'https://coffee.alexflipnote.dev/kfPtX_HEchI_coffee.jpg'),
     );
-    expect(status.error, isNull);
-    expect(status.status, CoffeeApiResponseStatus.success);
     expect(status.isOk(), isTrue);
   });
 
-  test('should return null on no image in response', () async {
+  test('should return empty on no image in response', () async {
     final response = http.Response(_noImageResponse, 200);
     when(() => client.get(Uri.parse(coffeeApiUrl)))
         .thenAnswer((_) async => response);
@@ -37,9 +36,7 @@ void main() {
     final api = CoffeeApiClient(client: client);
     final status = await api.getRandomImageUrl();
 
-    expect(status.url, isNull);
-    expect(status.error, isNull);
-    expect(status.status, CoffeeApiResponseStatus.empty);
+    expect(status, CoffeeApiResponse.empty());
     expect(status.isOk(), isFalse);
   });
 
@@ -53,6 +50,18 @@ void main() {
 
     expect(status.url, isNull);
     expect(status.status, CoffeeApiResponseStatus.error);
+    expect(status.isOk(), isFalse);
+  });
+
+  test('should return empty on json list response', () async {
+    final response = http.Response('[]', 200);
+    when(() => client.get(Uri.parse(coffeeApiUrl)))
+        .thenAnswer((_) async => response);
+
+    final api = CoffeeApiClient(client: client);
+    final status = await api.getRandomImageUrl();
+
+    expect(status, CoffeeApiResponse.empty());
     expect(status.isOk(), isFalse);
   });
 }
