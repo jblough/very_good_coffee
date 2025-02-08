@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:very_good_coffee/favorites_carousel/bloc/favorites_carousel_state.dart';
 import 'package:very_good_coffee/favorites_carousel/favorites_carousel.dart';
 
 import '../../helpers/helpers.dart';
