@@ -2,6 +2,7 @@ import 'package:coffee_repository/coffee_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:very_good_coffee/coffee/bloc/coffee_cubit.dart';
+import 'package:very_good_coffee/coffee/bloc/coffee_state.dart';
 import 'package:very_good_coffee/coffee/widgets/source_aware_image.dart';
 import 'package:very_good_coffee/favorites_button/view/favorites_button.dart';
 import 'package:very_good_coffee/favorites_carousel_button/view/favorites_carousel_button.dart';
@@ -27,8 +28,9 @@ class _CoffeePageState extends State<CoffeePage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: BlocBuilder<CoffeeCubit, String?>(
-        builder: (_, url) {
+      child: BlocBuilder<CoffeeCubit, CoffeeState>(
+        builder: (_, state) {
+          final url = state.imageUrl;
           return Scaffold(
             body: Stack(
               children: [
