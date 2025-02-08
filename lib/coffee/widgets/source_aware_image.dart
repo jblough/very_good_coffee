@@ -49,7 +49,10 @@ class SourceAwareImage extends StatelessWidget {
         },
       );
     } else {
-      return Image.file(File(url));
+      return Image.file(
+        File(url),
+        gaplessPlayback: true,
+      );
     }
   }
 }

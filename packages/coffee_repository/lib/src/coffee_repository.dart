@@ -67,6 +67,8 @@ class CoffeeRepository {
       if (localPath != null) {
         currentFavorites.add(localPath);
         _favoritesStream.add(currentFavorites);
+        // Update the current image stream to be the local file
+        _imageStream.add(localPath);
       }
     }
   }
