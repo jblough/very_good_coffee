@@ -37,202 +37,224 @@ void main() {
     when(() => directory.path).thenReturn('fake-directory');
   });
 
-  group('download file tests', () {
-    test('should successfully download and store file locally', () async {
-      final response = http.Response('image-content', 200);
-      when(() => client.get(Uri.parse('https://test.com/test.png')))
-          .thenAnswer((_) async => response);
-
-      when(() => file.create(recursive: true)).thenAnswer((_) async => file);
-      when(() => file.writeAsBytes(any())).thenAnswer((_) async => file);
-
-      await IOOverrides.runZoned(
-        () async {
-          final storage = LocalStorage(subdirectory: 'subdir', client: client);
-          final local = await storage.downloadFile('https://test.com/test.png');
-
-          // Check that the file was downloaded
-          verify(() => client.get(Uri.parse('https://test.com/test.png')));
-
-          // Check that the file was created
-          verify(() => file.create(recursive: true));
-
-          // Check that the correct data what written to the file
-          verify(() => file.writeAsBytes('image-content'.codeUnits));
-
-          expect(local, 'fake-directory/subdir/test.png');
-        },
-        createDirectory: (String path) => directory,
-        createFile: (String path) => file,
-      );
+  group('local storage tests', () {
+    group('initialization tests', () {
+      test('should initialize with real dependencies', () {
+        final storage = LocalStorage(subdirectory: 'subdir');
+        expect(storage, isNotNull);
+      });
     });
 
-    test('should error when failing to download file', () async {
-      final response = http.Response('', 400);
-      when(() => client.get(Uri.parse('https://test.com/test.png')))
-          .thenAnswer((_) async => response);
+    group('download file tests', () {
+      test('should successfully download and store file locally', () async {
+        final response = http.Response('image-content', 200);
+        when(() => client.get(Uri.parse('https://test.com/test.png')))
+            .thenAnswer((_) async => response);
 
-      await IOOverrides.runZoned(
-        () async {
-          final storage = LocalStorage(subdirectory: 'subdir', client: client);
-          final local = await storage.downloadFile('https://test.com/test.png');
+        when(() => file.create(recursive: true)).thenAnswer((_) async => file);
+        when(() => file.writeAsBytes(any())).thenAnswer((_) async => file);
 
-          // Check that the file was downloaded
-          verify(() => client.get(Uri.parse('https://test.com/test.png')));
+        await IOOverrides.runZoned(
+          () async {
+            final storage =
+                LocalStorage(subdirectory: 'subdir', client: client);
+            final local =
+                await storage.downloadFile('https://test.com/test.png');
 
-          // Check that no attempt was made to create the file
-          verifyNever(() => file.create(recursive: any(named: 'recursive')));
+            // Check that the file was downloaded
+            verify(() => client.get(Uri.parse('https://test.com/test.png')));
 
-          // Check that no attempt was made to write a file
-          verifyNever(() => file.writeAsBytes(any()));
+            // Check that the file was created
+            verify(() => file.create(recursive: true));
 
-          expect(local, isNull);
-        },
-        createDirectory: (String path) => directory,
-        createFile: (String path) => file,
-      );
+            // Check that the correct data what written to the file
+            verify(() => file.writeAsBytes('image-content'.codeUnits));
+
+            expect(local, 'fake-directory/subdir/test.png');
+          },
+          createDirectory: (String path) => directory,
+          createFile: (String path) => file,
+        );
+      });
+
+      test('should error when failing to download file', () async {
+        final response = http.Response('', 400);
+        when(() => client.get(Uri.parse('https://test.com/test.png')))
+            .thenAnswer((_) async => response);
+
+        await IOOverrides.runZoned(
+          () async {
+            final storage =
+                LocalStorage(subdirectory: 'subdir', client: client);
+            final local =
+                await storage.downloadFile('https://test.com/test.png');
+
+            // Check that the file was downloaded
+            verify(() => client.get(Uri.parse('https://test.com/test.png')));
+
+            // Check that no attempt was made to create the file
+            verifyNever(() => file.create(recursive: any(named: 'recursive')));
+
+            // Check that no attempt was made to write a file
+            verifyNever(() => file.writeAsBytes(any()));
+
+            expect(local, isNull);
+          },
+          createDirectory: (String path) => directory,
+          createFile: (String path) => file,
+        );
+      });
+
+      test('should error when unable to create the local file', () async {
+        final response = http.Response('image-content', 200);
+        when(() => client.get(Uri.parse('https://test.com/test.png')))
+            .thenAnswer((_) async => response);
+
+        when(() => file.create(recursive: true))
+            .thenThrow(Exception('Unable to create file'));
+
+        await IOOverrides.runZoned(
+          () async {
+            final storage =
+                LocalStorage(subdirectory: 'subdir', client: client);
+            final local =
+                await storage.downloadFile('https://test.com/test.png');
+
+            // Check that the file was downloaded
+            verify(() => client.get(Uri.parse('https://test.com/test.png')));
+
+            // Check that no attempt was made to create the file
+            verify(() => file.create(recursive: true));
+
+            // Check that no attempt was made to write a file
+            verifyNever(() => file.writeAsBytes(any()));
+
+            expect(local, isNull);
+          },
+          createDirectory: (String path) => directory,
+          createFile: (String path) => file,
+        );
+      });
+
+      test('should error when unable to write the local file', () async {
+        final response = http.Response('image-content', 200);
+        when(() => client.get(Uri.parse('https://test.com/test.png')))
+            .thenAnswer((_) async => response);
+
+        when(() => file.create(recursive: true)).thenAnswer((_) async => file);
+        when(() => file.writeAsBytes(any()))
+            .thenThrow(Exception('Unable to write file'));
+
+        await IOOverrides.runZoned(
+          () async {
+            final storage =
+                LocalStorage(subdirectory: 'subdir', client: client);
+            final local =
+                await storage.downloadFile('https://test.com/test.png');
+
+            // Check that the file was downloaded
+            verify(() => client.get(Uri.parse('https://test.com/test.png')));
+
+            // Check that no attempt was made to create the file
+            verify(() => file.create(recursive: true));
+
+            // Check that no attempt was made to write a file
+            verify(() => file.writeAsBytes('image-content'.codeUnits));
+
+            expect(local, isNull);
+          },
+          createDirectory: (String path) => directory,
+          createFile: (String path) => file,
+        );
+      });
     });
 
-    test('should error when unable to create the local file', () async {
-      final response = http.Response('image-content', 200);
-      when(() => client.get(Uri.parse('https://test.com/test.png')))
-          .thenAnswer((_) async => response);
+    group('load file list tests', () {
+      test('should load list of files in directory', () async {
+        final files = [File('a'), File('b')];
+        when(directory.existsSync).thenAnswer((_) => true);
+        when(directory.listSync).thenAnswer((_) => files);
 
-      when(() => file.create(recursive: true))
-          .thenThrow(Exception('Unable to create file'));
+        await IOOverrides.runZoned(
+          () async {
+            final storage =
+                LocalStorage(subdirectory: 'subdir', client: client);
+            final fileList = await storage.loadFileList();
 
-      await IOOverrides.runZoned(
-        () async {
-          final storage = LocalStorage(subdirectory: 'subdir', client: client);
-          final local = await storage.downloadFile('https://test.com/test.png');
+            expect(fileList, ['a', 'b']);
+          },
+          createDirectory: (String path) => directory,
+          createFile: (String path) => file,
+        );
+      });
 
-          // Check that the file was downloaded
-          verify(() => client.get(Uri.parse('https://test.com/test.png')));
+      test('should return empty list of files for no directory', () async {
+        when(directory.existsSync).thenAnswer((_) => false);
 
-          // Check that no attempt was made to create the file
-          verify(() => file.create(recursive: true));
+        await IOOverrides.runZoned(
+          () async {
+            final storage =
+                LocalStorage(subdirectory: 'subdir', client: client);
+            final fileList = await storage.loadFileList();
 
-          // Check that no attempt was made to write a file
-          verifyNever(() => file.writeAsBytes(any()));
+            verifyNever(directory.listSync);
 
-          expect(local, isNull);
-        },
-        createDirectory: (String path) => directory,
-        createFile: (String path) => file,
-      );
+            expect(fileList, <FileSystemEntity>[]);
+          },
+          createDirectory: (String path) => directory,
+          createFile: (String path) => file,
+        );
+      });
+
+      test('should load list of files in directory', () async {
+        final files = <FileSystemEntity>[];
+        when(directory.existsSync).thenAnswer((_) => true);
+        when(directory.listSync).thenAnswer((_) => files);
+
+        await IOOverrides.runZoned(
+          () async {
+            final storage =
+                LocalStorage(subdirectory: 'subdir', client: client);
+            final fileList = await storage.loadFileList();
+
+            expect(fileList, <String>[]);
+          },
+          createDirectory: (String path) => directory,
+          createFile: (String path) => file,
+        );
+      });
     });
 
-    test('should error when unable to write the local file', () async {
-      final response = http.Response('image-content', 200);
-      when(() => client.get(Uri.parse('https://test.com/test.png')))
-          .thenAnswer((_) async => response);
+    group('delete file tests', () {
+      test('should delete file', () async {
+        when(file.delete).thenAnswer((_) async => file);
 
-      when(() => file.create(recursive: true)).thenAnswer((_) async => file);
-      when(() => file.writeAsBytes(any()))
-          .thenThrow(Exception('Unable to write file'));
+        await IOOverrides.runZoned(
+          () async {
+            final storage =
+                LocalStorage(subdirectory: 'subdir', client: client);
+            await storage.removeFile('fake-directory/subdir/test-file');
 
-      await IOOverrides.runZoned(
-        () async {
-          final storage = LocalStorage(subdirectory: 'subdir', client: client);
-          final local = await storage.downloadFile('https://test.com/test.png');
+            verify(file.delete);
+          },
+          createDirectory: (String path) => directory,
+          createFile: (String path) => file,
+        );
+      });
 
-          // Check that the file was downloaded
-          verify(() => client.get(Uri.parse('https://test.com/test.png')));
+      test('should not delete file in wrong directory', () async {
+        await IOOverrides.runZoned(
+          () async {
+            final storage =
+                LocalStorage(subdirectory: 'subdir', client: client);
+            await storage.removeFile('different-fake-directory/test-file');
 
-          // Check that no attempt was made to create the file
-          verify(() => file.create(recursive: true));
-
-          // Check that no attempt was made to write a file
-          verify(() => file.writeAsBytes('image-content'.codeUnits));
-
-          expect(local, isNull);
-        },
-        createDirectory: (String path) => directory,
-        createFile: (String path) => file,
-      );
-    });
-  });
-
-  group('load file list tests', () {
-    test('should load list of files in directory', () async {
-      final files = [File('a'), File('b')];
-      when(directory.existsSync).thenAnswer((_) => true);
-      when(directory.listSync).thenAnswer((_) => files);
-
-      await IOOverrides.runZoned(
-        () async {
-          final storage = LocalStorage(subdirectory: 'subdir', client: client);
-          final fileList = await storage.loadFileList();
-
-          expect(fileList, ['a', 'b']);
-        },
-        createDirectory: (String path) => directory,
-        createFile: (String path) => file,
-      );
-    });
-
-    test('should return empty list of files for no directory', () async {
-      when(directory.existsSync).thenAnswer((_) => false);
-
-      await IOOverrides.runZoned(
-        () async {
-          final storage = LocalStorage(subdirectory: 'subdir', client: client);
-          final fileList = await storage.loadFileList();
-
-          verifyNever(directory.listSync);
-
-          expect(fileList, <FileSystemEntity>[]);
-        },
-        createDirectory: (String path) => directory,
-        createFile: (String path) => file,
-      );
-    });
-
-    test('should load list of files in directory', () async {
-      final files = <FileSystemEntity>[];
-      when(directory.existsSync).thenAnswer((_) => true);
-      when(directory.listSync).thenAnswer((_) => files);
-
-      await IOOverrides.runZoned(
-        () async {
-          final storage = LocalStorage(subdirectory: 'subdir', client: client);
-          final fileList = await storage.loadFileList();
-
-          expect(fileList, <String>[]);
-        },
-        createDirectory: (String path) => directory,
-        createFile: (String path) => file,
-      );
-    });
-  });
-
-  group('delete file tests', () {
-    test('should delete file', () async {
-      when(file.delete).thenAnswer((_) async => file);
-
-      await IOOverrides.runZoned(
-        () async {
-          final storage = LocalStorage(subdirectory: 'subdir', client: client);
-          await storage.removeFile('fake-directory/subdir/test-file');
-
-          verify(file.delete);
-        },
-        createDirectory: (String path) => directory,
-        createFile: (String path) => file,
-      );
-    });
-
-    test('should not delete file in wrong directory', () async {
-      await IOOverrides.runZoned(
-        () async {
-          final storage = LocalStorage(subdirectory: 'subdir', client: client);
-          await storage.removeFile('different-fake-directory/test-file');
-
-          verifyNever(file.delete);
-        },
-        createDirectory: (String path) => directory,
-        createFile: (String path) => file,
-      );
+            verifyNever(file.delete);
+          },
+          createDirectory: (String path) => directory,
+          createFile: (String path) => file,
+        );
+      });
     });
   });
 }

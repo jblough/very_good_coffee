@@ -30,9 +30,11 @@ class CoffeeRepository {
 
   /// Initial the data in the repository. This currently loads the
   /// list of favorite images and downloads a new image from the API.
-  void initialize() {
-    loadFavorites();
-    refreshImage();
+  Future<void> initialize() async {
+    await Future.wait([
+      loadFavorites(),
+      refreshImage(),
+    ]);
   }
 
   /// Get a random coffee image from the API

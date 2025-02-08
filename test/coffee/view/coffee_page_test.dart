@@ -18,8 +18,7 @@ void main() {
     reset(coffeeCubit);
 
     // Default values
-    when(repository.refreshImage).thenAnswer((_) async {});
-    when(repository.loadFavorites).thenAnswer((_) async {});
+    when(repository.initialize).thenAnswer((_) async {});
 
     when(() => repository.favorites)
         .thenAnswer((_) => Stream<List<String>>.value([]));
@@ -59,6 +58,8 @@ void main() {
     });
 
     testWidgets('should refresh image on button press', (tester) async {
+      when(repository.refreshImage).thenAnswer((_) async {});
+
       final widget = generateWidget();
       await tester.pumpApp(widget);
       await tester.tap(find.byTooltip('Download a different image'));
@@ -68,6 +69,7 @@ void main() {
     });
 
     testWidgets('should refresh image on swipe', (tester) async {
+      when(repository.refreshImage).thenAnswer((_) async {});
       when(() => repository.currentImage)
           .thenAnswer((_) => Stream<String?>.value('http://test.com/a.png'));
 
