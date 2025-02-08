@@ -28,6 +28,11 @@ class CoffeeRepository {
 
   static const _favoritesDirectory = 'favorites';
 
+  void initialize() {
+    loadFavorites();
+    refreshImage();
+  }
+
   // Get a random coffee image
   Future<void> refreshImage() async {
     final response = await _api.getRandomImageUrl();

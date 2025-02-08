@@ -20,9 +20,8 @@ class _CoffeePageState extends State<CoffeePage> {
   void initState() {
     super.initState();
 
-    context.read<CoffeeRepository>()
-      ..loadFavorites()
-      ..refreshImage();
+    // TODO(me): See if there's a better place to call this
+    context.read<CoffeeRepository>().initialize();
   }
 
   @override
@@ -37,7 +36,7 @@ class _CoffeePageState extends State<CoffeePage> {
                 GestureDetector(
                   onHorizontalDragEnd: (details) {
                     if (details.velocity.pixelsPerSecond.dx.abs() > 1000) {
-                      pullDownNewImage(context);
+                      downloadNewImage(context);
                     }
                   },
                   child: Center(
@@ -59,7 +58,7 @@ class _CoffeePageState extends State<CoffeePage> {
                     shape: const CircleBorder(),
                     tooltip: context.l10n.tapToDownload,
                     child: const Icon(Icons.refresh),
-                    onPressed: () => pullDownNewImage(context),
+                    onPressed: () => downloadNewImage(context),
                   ),
                 ),
                 const Positioned(
@@ -75,7 +74,7 @@ class _CoffeePageState extends State<CoffeePage> {
     );
   }
 
-  void pullDownNewImage(BuildContext context) {
+  void downloadNewImage(BuildContext context) {
     context.read<CoffeeCubit>().refreshImage();
   }
 }

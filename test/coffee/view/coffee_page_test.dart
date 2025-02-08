@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:mocktail_image_network/mocktail_image_network.dart';
+import 'package:very_good_coffee/app/app.dart';
 import 'package:very_good_coffee/coffee/coffee.dart';
 import 'package:very_good_coffee/coffee/widgets/source_aware_image.dart';
 import 'package:very_good_coffee/favorite_button/favorite_button.dart';
@@ -63,6 +65,25 @@ void main() {
       await tester.pumpAndSettle();
 
       verify(coffeeCubit.refreshImage);
+    });
+
+    testWidgets('should refresh image on swipe', (tester) async {
+      when(() => repository.currentImage)
+          .thenAnswer((_) => Stream<String?>.value('http://test.com/a.png'));
+
+      await mockNetworkImages(() async {
+        await tester.pumpWidget(App(coffeeRepository: repository));
+        await tester.pump();
+
+        await tester.fling(
+          find.byType(SourceAwareImage),
+          const Offset(500, 0),
+          2000,
+        );
+        await tester.pump();
+
+        verify(repository.refreshImage);
+      });
     });
   });
 }

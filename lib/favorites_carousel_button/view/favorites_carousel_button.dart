@@ -31,7 +31,6 @@ class _FavoritesCarouselButtonState extends State<FavoritesCarouselButton> {
           onPressed: () async {
             if (_controller != null) {
               _controller?.close();
-              _controller = null;
               return;
             }
 
