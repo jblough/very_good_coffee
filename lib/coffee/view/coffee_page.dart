@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:very_good_coffee/coffee/bloc/coffee_cubit.dart';
 import 'package:very_good_coffee/coffee/bloc/coffee_state.dart';
 import 'package:very_good_coffee/coffee/widgets/source_aware_image.dart';
-import 'package:very_good_coffee/favorites_button/view/favorites_button.dart';
+import 'package:very_good_coffee/favorite_button/view/favorite_button.dart';
 import 'package:very_good_coffee/favorites_carousel_button/view/favorites_carousel_button.dart';
 import 'package:very_good_coffee/l10n/l10n.dart';
 

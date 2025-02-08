@@ -1,10 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:coffee_repository/coffee_repository.dart';
-import 'package:very_good_coffee/favorites_button/bloc/favorites_button_state.dart';
+import 'package:very_good_coffee/favorite_button/bloc/favorite_button_state.dart';
 
-class FavoritesButtonCubit extends Cubit<FavoritesButtonState> {
-  FavoritesButtonCubit(this.coffeeRepository)
-      : super(const FavoritesButtonState()) {
+class FavoriteButtonCubit extends Cubit<FavoriteButtonState> {
+  FavoriteButtonCubit(this.coffeeRepository)
+      : super(const FavoriteButtonState()) {
     coffeeRepository.favorites.listen((favorites) {
       emit(state.copyWith(favorites: favorites));
     });

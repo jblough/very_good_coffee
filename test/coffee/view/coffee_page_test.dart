@@ -4,8 +4,8 @@ import 'package:mocktail/mocktail.dart';
 import 'package:very_good_coffee/coffee/bloc/coffee_state.dart';
 import 'package:very_good_coffee/coffee/coffee.dart';
 import 'package:very_good_coffee/coffee/widgets/source_aware_image.dart';
-import 'package:very_good_coffee/favorites_button/bloc/favorites_button_state.dart';
-import 'package:very_good_coffee/favorites_button/favorites_button.dart';
+import 'package:very_good_coffee/favorite_button/bloc/favorite_button_state.dart';
+import 'package:very_good_coffee/favorite_button/favorite_button.dart';
 import 'package:very_good_coffee/favorites_carousel/bloc/favorites_carousel_state.dart';
 import 'package:very_good_coffee/favorites_carousel_button/bloc/favorites_carousel_button_state.dart';
 
@@ -14,14 +14,14 @@ import '../../helpers/helpers.dart';
 void main() {
   final repository = MockCoffeeRepository();
   final coffeeCubit = MockCoffeeCubit();
-  final favoritesButtonCubit = MockFavoritesButtonCubit();
+  final favoriteButtonCubit = MockFavoriteButtonCubit();
   final favoritesCarouselButtonCubit = MockFavoritesCarouselButtonCubit();
   final favoritesCarouselCubit = MockFavoritesCarouselCubit();
 
   setUp(() {
     reset(repository);
     reset(coffeeCubit);
-    reset(favoritesButtonCubit);
+    reset(favoriteButtonCubit);
     reset(favoritesCarouselButtonCubit);
     reset(favoritesCarouselCubit);
 
@@ -39,12 +39,12 @@ void main() {
     when(() => coffeeCubit.stream).thenAnswer((_) => Stream.value(state));
     when(coffeeCubit.close).thenAnswer((_) async {});
 
-    when(() => favoritesButtonCubit.state)
-        .thenReturn(const FavoritesButtonState());
-    when(() => favoritesButtonCubit.stream)
-        .thenAnswer((_) => Stream.value(const FavoritesButtonState()));
-    when(() => favoritesButtonCubit.isFavorite(any())).thenReturn(false);
-    when(favoritesButtonCubit.close).thenAnswer((_) async {});
+    when(() => favoriteButtonCubit.state)
+        .thenReturn(const FavoriteButtonState());
+    when(() => favoriteButtonCubit.stream)
+        .thenAnswer((_) => Stream.value(const FavoriteButtonState()));
+    when(() => favoriteButtonCubit.isFavorite(any())).thenReturn(false);
+    when(favoriteButtonCubit.close).thenAnswer((_) async {});
 
     when(() => favoritesCarouselCubit.state)
         .thenReturn(const FavoritesCarouselState());
@@ -70,7 +70,7 @@ void main() {
         const CoffeePage(),
         coffeeRepository: repository,
         coffeeCubit: coffeeCubit,
-        favoritesButtonCubit: favoritesButtonCubit,
+        favoriteButtonCubit: favoriteButtonCubit,
         favoritesCarouselButtonCubit: favoritesCarouselButtonCubit,
         favoritesCarouselCubit: favoritesCarouselCubit,
       );
@@ -84,7 +84,7 @@ void main() {
         const CoffeePage(),
         coffeeRepository: repository,
         coffeeCubit: coffeeCubit,
-        favoritesButtonCubit: favoritesButtonCubit,
+        favoriteButtonCubit: favoriteButtonCubit,
         favoritesCarouselButtonCubit: favoritesCarouselButtonCubit,
         favoritesCarouselCubit: favoritesCarouselCubit,
       );

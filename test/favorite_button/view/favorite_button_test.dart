@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:very_good_coffee/favorites_button/bloc/favorites_button_state.dart';
-import 'package:very_good_coffee/favorites_button/favorites_button.dart';
+import 'package:very_good_coffee/favorite_button/bloc/favorite_button_state.dart';
+import 'package:very_good_coffee/favorite_button/favorite_button.dart';
 
 import '../../helpers/helpers.dart';
 
 void main() {
-  final favoritesButtonCubit = MockFavoritesButtonCubit();
+  final favoritesButtonCubit = MockFavoriteButtonCubit();
 
   setUp(() {
     reset(favoritesButtonCubit);
 
     // Default values
     when(() => favoritesButtonCubit.state)
-        .thenReturn(const FavoritesButtonState());
+        .thenReturn(const FavoriteButtonState());
     when(() => favoritesButtonCubit.stream)
-        .thenAnswer((_) => Stream.value(const FavoritesButtonState()));
+        .thenAnswer((_) => Stream.value(const FavoriteButtonState()));
     when(() => favoritesButtonCubit.isFavorite(any())).thenReturn(false);
     when(favoritesButtonCubit.close).thenAnswer((_) async {});
   });
@@ -26,7 +26,7 @@ void main() {
         'should see correct favorite icon and label when not a favorite',
         (tester) async {
       const url = 'b.png';
-      const state = FavoritesButtonState(favorites: ['a.png']);
+      const state = FavoriteButtonState(favorites: ['a.png']);
       when(() => favoritesButtonCubit.state).thenReturn(state);
       when(() => favoritesButtonCubit.stream)
           .thenAnswer((_) => Stream.value(state));
@@ -34,7 +34,7 @@ void main() {
 
       final widget = addProviders(
         const FavoriteButton(url: url),
-        favoritesButtonCubit: favoritesButtonCubit,
+        favoriteButtonCubit: favoritesButtonCubit,
       );
       await tester.pumpApp(widget);
       final button = tester.widget(find.byType(FloatingActionButton))
@@ -48,7 +48,7 @@ void main() {
     testWidgets('should see correct favorite icon and label when a favorite',
         (tester) async {
       const url = 'a.png';
-      const state = FavoritesButtonState(favorites: ['a.png']);
+      const state = FavoriteButtonState(favorites: ['a.png']);
       when(() => favoritesButtonCubit.state).thenReturn(state);
       when(() => favoritesButtonCubit.stream)
           .thenAnswer((_) => Stream.value(state));
@@ -56,7 +56,7 @@ void main() {
 
       final widget = addProviders(
         const FavoriteButton(url: url),
-        favoritesButtonCubit: favoritesButtonCubit,
+        favoriteButtonCubit: favoritesButtonCubit,
       );
       await tester.pumpApp(widget);
       final button = tester.widget(find.byType(FloatingActionButton))

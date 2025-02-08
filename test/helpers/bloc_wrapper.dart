@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:very_good_coffee/coffee/bloc/coffee_state.dart';
 import 'package:very_good_coffee/coffee/coffee.dart';
-import 'package:very_good_coffee/favorites_button/bloc/favorites_button_state.dart';
-import 'package:very_good_coffee/favorites_button/favorites_button.dart';
+import 'package:very_good_coffee/favorite_button/bloc/favorite_button_state.dart';
+import 'package:very_good_coffee/favorite_button/favorite_button.dart';
 import 'package:very_good_coffee/favorites_carousel/bloc/favorites_carousel_state.dart';
 import 'package:very_good_coffee/favorites_carousel/favorites_carousel.dart';
 import 'package:very_good_coffee/favorites_carousel_button/bloc/favorites_carousel_button_state.dart';
@@ -16,8 +16,8 @@ class MockCoffeeRepository extends Mock implements CoffeeRepository {}
 
 class MockCoffeeCubit extends MockCubit<CoffeeState> implements CoffeeCubit {}
 
-class MockFavoritesButtonCubit extends MockCubit<FavoritesButtonState>
-    implements FavoritesButtonCubit {}
+class MockFavoriteButtonCubit extends MockCubit<FavoriteButtonState>
+    implements FavoriteButtonCubit {}
 
 class MockFavoritesCarouselButtonCubit
     extends MockCubit<FavoritesCarouselButtonState>
@@ -30,7 +30,7 @@ Widget addProviders(
   Widget child, {
   CoffeeRepository? coffeeRepository,
   CoffeeCubit? coffeeCubit,
-  FavoritesButtonCubit? favoritesButtonCubit,
+  FavoriteButtonCubit? favoriteButtonCubit,
   FavoritesCarouselCubit? favoritesCarouselCubit,
   FavoritesCarouselButtonCubit? favoritesCarouselButtonCubit,
 }) {
@@ -43,9 +43,8 @@ Widget addProviders(
           create: (_) => coffeeCubit ?? CoffeeCubit(repository),
           lazy: false,
         ),
-        BlocProvider<FavoritesButtonCubit>(
-          create: (_) =>
-              favoritesButtonCubit ?? FavoritesButtonCubit(repository),
+        BlocProvider<FavoriteButtonCubit>(
+          create: (_) => favoriteButtonCubit ?? FavoriteButtonCubit(repository),
           lazy: false,
         ),
         BlocProvider<FavoritesCarouselCubit>(

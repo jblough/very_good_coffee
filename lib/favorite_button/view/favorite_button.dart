@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:very_good_coffee/favorites_button/bloc/favorites_button_cubit.dart';
-import 'package:very_good_coffee/favorites_button/bloc/favorites_button_state.dart';
+import 'package:very_good_coffee/favorite_button/bloc/favorite_button_cubit.dart';
+import 'package:very_good_coffee/favorite_button/bloc/favorite_button_state.dart';
 import 'package:very_good_coffee/l10n/l10n.dart';
 
 class FavoriteButton extends StatelessWidget {
@@ -13,9 +13,9 @@ class FavoriteButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    return BlocBuilder<FavoritesButtonCubit, FavoritesButtonState>(
+    return BlocBuilder<FavoriteButtonCubit, FavoriteButtonState>(
       builder: (context, state) {
-        final cubit = context.read<FavoritesButtonCubit>();
+        final cubit = context.read<FavoriteButtonCubit>();
         final isFavorite = cubit.isFavorite(url);
         return FloatingActionButton(
           shape: const CircleBorder(),

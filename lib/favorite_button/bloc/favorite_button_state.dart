@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
-class FavoritesButtonState extends Equatable {
-  const FavoritesButtonState({
+class FavoriteButtonState extends Equatable {
+  const FavoriteButtonState({
     this.currentImage,
     this.favorites = const [],
   });
@@ -9,11 +9,11 @@ class FavoritesButtonState extends Equatable {
   final String? currentImage;
   final List<String> favorites;
 
-  FavoritesButtonState copyWith({
+  FavoriteButtonState copyWith({
     String? currentImage,
     List<String>? favorites,
   }) {
-    return FavoritesButtonState(
+    return FavoriteButtonState(
       currentImage: currentImage ?? this.currentImage,
       favorites: favorites ?? this.favorites,
     );
