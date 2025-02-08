@@ -23,7 +23,8 @@ void main() {
     expect(
       status,
       CoffeeApiResponse.ok(
-          'https://coffee.alexflipnote.dev/kfPtX_HEchI_coffee.jpg'),
+        'https://coffee.alexflipnote.dev/kfPtX_HEchI_coffee.jpg',
+      ),
     );
     expect(status.isOk(), isTrue);
   });

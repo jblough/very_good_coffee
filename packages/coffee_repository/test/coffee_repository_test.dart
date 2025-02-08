@@ -87,34 +87,6 @@ void main() {
     });
   });
 
-  group('is favorite tests', () {
-    test('should return true for is favorite', () async {
-      const url = 'a.png';
-      const favorites = [url];
-      when(storage.loadFileList).thenAnswer((_) async => favorites);
-
-      final repository = CoffeeRepository(api: client, localStorage: storage);
-
-      await repository.loadFavorites();
-      final isFavorite = repository.isFavorite(url);
-
-      expect(isFavorite, isTrue);
-    });
-
-    test('should return false for is favorite', () async {
-      const url = 'a.png';
-      const favorites = ['b.png'];
-      when(storage.loadFileList).thenAnswer((_) async => favorites);
-
-      final repository = CoffeeRepository(api: client, localStorage: storage);
-
-      await repository.loadFavorites();
-      final isFavorite = repository.isFavorite(url);
-
-      expect(isFavorite, isFalse);
-    });
-  });
-
   group('add favorite tests', () {
     test('should add favorite', () async {
       const url = 'https://test.com/a.png';

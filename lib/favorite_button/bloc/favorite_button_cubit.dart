@@ -24,6 +24,4 @@ class FavoriteButtonCubit extends Cubit<FavoriteButtonState> {
     await coffeeRepository.removeFavorite(url);
     await coffeeRepository.loadFavorites();
   }
-
-  bool isFavorite(String url) => coffeeRepository.isFavorite(url);
 }

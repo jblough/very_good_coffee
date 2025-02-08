@@ -50,8 +50,6 @@ void main() {
     });
 
     testWidgets('should load image', (tester) async {
-      when(() => repository.isFavorite(any())).thenReturn(false);
-
       final widget = generateWidget();
       await tester.pumpApp(widget);
       expect(find.byType(CircularProgressIndicator), findsNothing);
@@ -60,8 +58,6 @@ void main() {
     });
 
     testWidgets('should refresh image on button press', (tester) async {
-      when(() => repository.isFavorite(any())).thenReturn(false);
-
       final widget = generateWidget();
       await tester.pumpApp(widget);
       await tester.tap(find.byTooltip('Download a different image'));

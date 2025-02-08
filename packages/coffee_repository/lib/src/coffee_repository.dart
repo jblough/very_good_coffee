@@ -51,15 +51,12 @@ class CoffeeRepository {
     _imageStream.add(url);
   }
 
-  bool isFavorite(String url) {
-    final filename = url.split('/').last;
-    return _favoritesStream.value.any((element) => element.endsWith(filename));
-  }
-
   // Mark a coffee image as a favorite
   Future<void> addFavorite(String url) async {
     // Check that the file url/path isn't already a favorite
-    if (!isFavorite(url)) {
+    final filename = url.split('/').last;
+    final isFavorite = _favoritesStream.value.any((e) => e.endsWith(filename));
+    if (!isFavorite) {
       final currentFavorites = _favoritesStream.value;
       final localPath = await _localStorage.downloadFile(url.convertToUrl());
       if (localPath != null) {

@@ -19,6 +19,12 @@ class FavoriteButtonState extends Equatable {
     );
   }
 
+  bool isFavorite() {
+    final filename = currentImage?.split('/').last;
+    return filename != null &&
+        favorites.any((element) => element.endsWith(filename));
+  }
+
   @override
   List<Object?> get props => [currentImage, favorites];
 }

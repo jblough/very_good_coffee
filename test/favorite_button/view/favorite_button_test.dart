@@ -17,7 +17,6 @@ void main() {
         .thenReturn(const FavoriteButtonState());
     when(() => favoritesButtonCubit.stream)
         .thenAnswer((_) => Stream.value(const FavoriteButtonState()));
-    when(() => favoritesButtonCubit.isFavorite(any())).thenReturn(false);
     when(favoritesButtonCubit.close).thenAnswer((_) async {});
   });
 
@@ -35,7 +34,6 @@ void main() {
       when(() => favoritesButtonCubit.state).thenReturn(state);
       when(() => favoritesButtonCubit.stream)
           .thenAnswer((_) => Stream.value(state));
-      when(() => favoritesButtonCubit.isFavorite(any())).thenReturn(false);
       when(() => favoritesButtonCubit.addFavorite(any()))
           .thenAnswer((_) async {});
 
@@ -46,7 +44,6 @@ void main() {
       expect(button.tooltip, 'Add this image to your list of favorite images');
       final icon = tester.widget(find.byType(Icon)) as Icon;
       expect(icon.icon, Icons.favorite_outline);
-      verify(() => favoritesButtonCubit.isFavorite(url));
 
       // Tap on the button to add to favorites
       await tester.tap(find.byType(FloatingActionButton));
@@ -57,11 +54,13 @@ void main() {
     testWidgets('should see correct favorite icon and label when a favorite',
         (tester) async {
       const url = 'a.png';
-      const state = FavoriteButtonState(favorites: ['a.png']);
+      const state = FavoriteButtonState(
+        currentImage: url,
+        favorites: ['a.png'],
+      );
       when(() => favoritesButtonCubit.state).thenReturn(state);
       when(() => favoritesButtonCubit.stream)
           .thenAnswer((_) => Stream.value(state));
-      when(() => favoritesButtonCubit.isFavorite(any())).thenReturn(true);
       when(() => favoritesButtonCubit.removeFavorite(any()))
           .thenAnswer((_) async {});
 
@@ -72,7 +71,6 @@ void main() {
       expect(button.tooltip, 'Remove this image from your list of favorites');
       final icon = tester.widget(find.byType(Icon)) as Icon;
       expect(icon.icon, Icons.favorite);
-      verify(() => favoritesButtonCubit.isFavorite(url));
 
       // Tap on the button to remove from favorites
       await tester.tap(find.byType(FloatingActionButton));

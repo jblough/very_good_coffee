@@ -15,8 +15,7 @@ class FavoriteButton extends StatelessWidget {
 
     return BlocBuilder<FavoriteButtonCubit, FavoriteButtonState>(
       builder: (context, state) {
-        final cubit = context.read<FavoriteButtonCubit>();
-        final isFavorite = cubit.isFavorite(url);
+        final isFavorite = state.isFavorite();
         return FloatingActionButton(
           shape: const CircleBorder(),
           tooltip:
@@ -25,6 +24,7 @@ class FavoriteButton extends StatelessWidget {
             isFavorite ? Icons.favorite : Icons.favorite_outline,
           ),
           onPressed: () {
+            final cubit = context.read<FavoriteButtonCubit>();
             if (isFavorite) {
               cubit.removeFavorite(url);
             } else {
