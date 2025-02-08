@@ -20,9 +20,9 @@ class FavoriteButtonState extends Equatable {
   }
 
   bool isFavorite() {
-    final filename = currentImage?.split('/').last;
+    final filename = currentImage?.split('/').last.toLowerCase();
     return filename != null &&
-        favorites.any((element) => element.endsWith(filename));
+        favorites.any((e) => e.toLowerCase().endsWith(filename));
   }
 
   @override
