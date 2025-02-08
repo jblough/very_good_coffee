@@ -14,7 +14,7 @@ A Very Good Project created by Very Good CLI.
 
 @refresh
 
-- Launch the app via the app icon on your phone ![image info](./android/app/src/main/res/mipmap-hdpi/ic_launcher.png)
+- Launch the app via the app icon on your phone ![image info](./documentation_assets/app_icon.png)
 - ![image_info](./documentation_assets/refresh.png) Pressing the button on the top right will pull a different random image from the internet
 - Swiping on the screen should also pull a different random image from the internet
 - ![image_info](./documentation_assets/favorite.png) Pressing the button on the top left can be used to download the current image an mark it as a favorite
