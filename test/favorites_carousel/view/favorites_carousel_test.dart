@@ -1,35 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:very_good_coffee/favorites_carousel/bloc/favorites_carousel_event.dart';
 import 'package:very_good_coffee/favorites_carousel/favorites_carousel.dart';
 
 import '../../helpers/helpers.dart';
 
 void main() {
-  final favoritesCarouselCubit = MockFavoritesCarouselCubit();
+  final favoritesCarouselBloc = MockFavoritesCarouselBloc();
 
   setUp(() {
-    reset(favoritesCarouselCubit);
+    reset(favoritesCarouselBloc);
 
     // Default values
-    when(() => favoritesCarouselCubit.state)
+    when(() => favoritesCarouselBloc.state)
         .thenReturn(const FavoritesCarouselState());
-    when(() => favoritesCarouselCubit.stream)
+    when(() => favoritesCarouselBloc.stream)
         .thenAnswer((_) => Stream.value(const FavoritesCarouselState()));
-    when(favoritesCarouselCubit.close).thenAnswer((_) async {});
+    when(favoritesCarouselBloc.close).thenAnswer((_) async {});
   });
 
   Widget generateWidget() => addProviders(
-        const FavoritesCarousel(),
-        favoritesCarouselCubit: favoritesCarouselCubit,
+        FavoritesCarousel(bloc: favoritesCarouselBloc),
       );
 
   group('FavoritesCarousel tests', () {
     testWidgets('should load', (tester) async {
       final images = ['a.png', 'b.png'];
       final state = FavoritesCarouselState(favorites: images);
-      when(() => favoritesCarouselCubit.state).thenReturn(state);
-      when(() => favoritesCarouselCubit.stream)
+      when(() => favoritesCarouselBloc.state).thenReturn(state);
+      when(() => favoritesCarouselBloc.stream)
           .thenAnswer((_) => Stream.value(state));
 
       final widget = generateWidget();
@@ -42,15 +42,15 @@ void main() {
     testWidgets('should load image on tap', (tester) async {
       final images = ['a.png', 'b.png'];
       final state = FavoritesCarouselState(favorites: images);
-      when(() => favoritesCarouselCubit.state).thenReturn(state);
-      when(() => favoritesCarouselCubit.stream)
+      when(() => favoritesCarouselBloc.state).thenReturn(state);
+      when(() => favoritesCarouselBloc.stream)
           .thenAnswer((_) => Stream.value(state));
 
       final widget = generateWidget();
       await tester.pumpApp(widget);
       await tester.tap(find.byType(Image).last, warnIfMissed: false);
       await tester.pumpAndSettle();
-      verify(() => favoritesCarouselCubit.setCurrentImage(images.last));
+      verify(() => favoritesCarouselBloc.add(SetCurrentImage(images.last)));
     });
   });
 }

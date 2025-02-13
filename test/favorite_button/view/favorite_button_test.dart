@@ -1,27 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:very_good_coffee/favorite_button/bloc/favorite_button_event.dart';
 import 'package:very_good_coffee/favorite_button/favorite_button.dart';
 
 import '../../helpers/helpers.dart';
 
 void main() {
-  final favoritesButtonCubit = MockFavoriteButtonCubit();
+  final favoritesButtonBloc = MockFavoriteButtonBloc();
 
+  setUpAll(() {
+    registerFallbackValue(const IncomingFavorites([]));
+  });
   setUp(() {
-    reset(favoritesButtonCubit);
+    reset(favoritesButtonBloc);
 
     // Default values
-    when(() => favoritesButtonCubit.state)
+    when(() => favoritesButtonBloc.state)
         .thenReturn(const FavoriteButtonState());
-    when(() => favoritesButtonCubit.stream)
+    when(() => favoritesButtonBloc.stream)
         .thenAnswer((_) => Stream.value(const FavoriteButtonState()));
-    when(favoritesButtonCubit.close).thenAnswer((_) async {});
+    when(favoritesButtonBloc.close).thenAnswer((_) async {});
   });
 
   Widget generateWidget(String url) => addProviders(
-        FavoriteButton(url: url),
-        favoriteButtonCubit: favoritesButtonCubit,
+        FavoriteButton(url: url, bloc: favoritesButtonBloc),
       );
 
   group('FavoritesButton tests', () {
@@ -30,11 +33,10 @@ void main() {
         (tester) async {
       const url = 'b.png';
       const state = FavoriteButtonState(favorites: ['a.png']);
-      when(() => favoritesButtonCubit.state).thenReturn(state);
-      when(() => favoritesButtonCubit.stream)
+      when(() => favoritesButtonBloc.state).thenReturn(state);
+      when(() => favoritesButtonBloc.stream)
           .thenAnswer((_) => Stream.value(state));
-      when(() => favoritesButtonCubit.addFavorite(any()))
-          .thenAnswer((_) async {});
+      when(() => favoritesButtonBloc.add(any())).thenAnswer((_) async {});
 
       final widget = generateWidget(url);
       await tester.pumpApp(widget);
@@ -47,7 +49,7 @@ void main() {
       // Tap on the button to add to favorites
       await tester.tap(find.byType(FloatingActionButton));
       await tester.pumpAndSettle();
-      verify(() => favoritesButtonCubit.addFavorite(url));
+      verify(() => favoritesButtonBloc.add(const AddFavorite(url)));
     });
 
     testWidgets('should see correct favorite icon and label when a favorite',
@@ -57,11 +59,10 @@ void main() {
         currentImage: url,
         favorites: ['a.png'],
       );
-      when(() => favoritesButtonCubit.state).thenReturn(state);
-      when(() => favoritesButtonCubit.stream)
+      when(() => favoritesButtonBloc.state).thenReturn(state);
+      when(() => favoritesButtonBloc.stream)
           .thenAnswer((_) => Stream.value(state));
-      when(() => favoritesButtonCubit.removeFavorite(any()))
-          .thenAnswer((_) async {});
+      when(() => favoritesButtonBloc.add(any())).thenAnswer((_) async {});
 
       final widget = generateWidget(url);
       await tester.pumpApp(widget);
@@ -74,7 +75,7 @@ void main() {
       // Tap on the button to remove from favorites
       await tester.tap(find.byType(FloatingActionButton));
       await tester.pumpAndSettle();
-      verify(() => favoritesButtonCubit.removeFavorite(url));
+      verify(() => favoritesButtonBloc.add(const RemoveFavorite(url)));
     });
   });
 }

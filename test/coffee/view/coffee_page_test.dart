@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:very_good_coffee/app/app.dart';
+import 'package:very_good_coffee/coffee/bloc/coffee_event.dart';
 import 'package:very_good_coffee/coffee/coffee.dart';
 import 'package:very_good_coffee/coffee/widgets/source_aware_image.dart';
 import 'package:very_good_coffee/favorite_button/favorite_button.dart';
@@ -11,11 +12,11 @@ import '../../helpers/helpers.dart';
 
 void main() {
   final repository = MockCoffeeRepository();
-  final coffeeCubit = MockCoffeeCubit();
+  final coffeeBloc = MockCoffeeBloc();
 
   setUp(() {
     reset(repository);
-    reset(coffeeCubit);
+    reset(coffeeBloc);
 
     // Default values
     when(repository.initialize).thenAnswer((_) async {});
@@ -26,22 +27,20 @@ void main() {
         .thenAnswer((_) => const Stream<String?>.empty());
 
     const state = CoffeeState(imageUrl: 'image-test');
-    when(() => coffeeCubit.state).thenReturn(state);
-    when(() => coffeeCubit.stream).thenAnswer((_) => Stream.value(state));
-    when(coffeeCubit.close).thenAnswer((_) async {});
+    when(() => coffeeBloc.state).thenReturn(state);
+    when(() => coffeeBloc.stream).thenAnswer((_) => Stream.value(state));
+    when(coffeeBloc.close).thenAnswer((_) async {});
   });
 
   Widget generateWidget() => addProviders(
-        const CoffeePage(),
-        coffeeRepository: repository,
-        coffeeCubit: coffeeCubit,
+        CoffeePage(bloc: coffeeBloc),
       );
 
   group('CoffeePage', () {
     testWidgets('should show busy indicator when no image', (tester) async {
       const state = CoffeeState();
-      when(() => coffeeCubit.state).thenReturn(state);
-      when(() => coffeeCubit.stream).thenAnswer((_) => Stream.value(state));
+      when(() => coffeeBloc.state).thenReturn(state);
+      when(() => coffeeBloc.stream).thenAnswer((_) => Stream.value(state));
 
       final widget = generateWidget();
       await tester.pumpApp(widget);
@@ -65,7 +64,7 @@ void main() {
       await tester.tap(find.byTooltip('Download a different image'));
       await tester.pumpAndSettle();
 
-      verify(coffeeCubit.refreshImage);
+      verify(() => coffeeBloc.add(const RefreshImage()));
     });
 
     testWidgets('should refresh image on swipe', (tester) async {

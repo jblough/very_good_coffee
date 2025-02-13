@@ -8,28 +8,27 @@ import '../../helpers/helpers.dart';
 
 void main() {
   final repository = MockCoffeeRepository();
-  final favoritesCarouselButtonCubit = MockFavoritesCarouselButtonCubit();
+  final favoritesCarouselButtonBloc = MockFavoritesCarouselButtonBloc();
 
   setUp(() {
     reset(repository);
-    reset(favoritesCarouselButtonCubit);
+    reset(favoritesCarouselButtonBloc);
 
     // Default values
     when(() => repository.currentImage).thenAnswer((_) => Stream.value(null));
-    when(repository.refreshImage).thenAnswer((_) async {});
+    when(repository.initialize).thenAnswer((_) async {});
 
-    when(() => favoritesCarouselButtonCubit.state)
+    when(() => favoritesCarouselButtonBloc.state)
         .thenReturn(const FavoritesCarouselButtonState());
-    when(() => favoritesCarouselButtonCubit.stream).thenAnswer(
+    when(() => favoritesCarouselButtonBloc.stream).thenAnswer(
       (_) => Stream.value(const FavoritesCarouselButtonState()),
     );
-    when(favoritesCarouselButtonCubit.close).thenAnswer((_) async {});
+    when(favoritesCarouselButtonBloc.close).thenAnswer((_) async {});
   });
 
   Widget generateWidget() => addProviders(
-        const FavoritesCarouselButton(),
+        FavoritesCarouselButton(bloc: favoritesCarouselButtonBloc),
         coffeeRepository: repository,
-        favoritesCarouselButtonCubit: favoritesCarouselButtonCubit,
       );
 
   group('FavoritesCarouselButton tests', () {
@@ -37,8 +36,8 @@ void main() {
         (tester) async {
       const favorites = ['a.png'];
       const state = FavoritesCarouselButtonState(favorites: favorites);
-      when(() => favoritesCarouselButtonCubit.state).thenReturn(state);
-      when(() => favoritesCarouselButtonCubit.stream)
+      when(() => favoritesCarouselButtonBloc.state).thenReturn(state);
+      when(() => favoritesCarouselButtonBloc.stream)
           .thenAnswer((_) => Stream.value(state));
 
       when(() => repository.favorites)
@@ -62,8 +61,8 @@ void main() {
     testWidgets('should open favorites carousel when tapped', (tester) async {
       const favorites = ['a.png'];
       const state = FavoritesCarouselButtonState(favorites: favorites);
-      when(() => favoritesCarouselButtonCubit.state).thenReturn(state);
-      when(() => favoritesCarouselButtonCubit.stream)
+      when(() => favoritesCarouselButtonBloc.state).thenReturn(state);
+      when(() => favoritesCarouselButtonBloc.stream)
           .thenAnswer((_) => Stream.value(state));
 
       when(() => repository.favorites)
@@ -91,8 +90,8 @@ void main() {
         (tester) async {
       const favorites = ['a.png'];
       const state = FavoritesCarouselButtonState(favorites: favorites);
-      when(() => favoritesCarouselButtonCubit.state).thenReturn(state);
-      when(() => favoritesCarouselButtonCubit.stream)
+      when(() => favoritesCarouselButtonBloc.state).thenReturn(state);
+      when(() => favoritesCarouselButtonBloc.stream)
           .thenAnswer((_) => Stream.value(state));
 
       when(() => repository.favorites)

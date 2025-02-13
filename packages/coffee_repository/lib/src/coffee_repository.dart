@@ -1,4 +1,5 @@
-import 'dart:math';
+import 'dart:developer' show log;
+import 'dart:math' hide log;
 
 import 'package:coffee_api/coffee_api.dart';
 import 'package:local_storage/local_storage.dart';
@@ -31,10 +32,11 @@ class CoffeeRepository {
   /// Initial the data in the repository. This currently loads the
   /// list of favorite images and downloads a new image from the API.
   Future<void> initialize() async {
-    await Future.wait([
-      loadFavorites(),
-      refreshImage(),
-    ]);
+    await loadFavorites();
+    // If a favorite hasn't already been loaded them retrieve from the API
+    if (_imageStream.valueOrNull == null) {
+      await refreshImage();
+    }
   }
 
   /// Get a random coffee image from the API
@@ -57,12 +59,12 @@ class CoffeeRepository {
     }
   }
 
-  /// Set the image to be displayed
+  /// Set the image to be displayed to the provided [url].
   void setCurrentImage(String url) {
     _imageStream.add(url);
   }
 
-  /// Mark a coffee image as a favorite
+  /// Mark a coffee image [url] as a favorite.
   Future<void> addFavorite(String url) async {
     // Check that the file url/path isn't already a favorite
     final filename = url.split('/').last.toLowerCase();
@@ -70,17 +72,19 @@ class CoffeeRepository {
         _favoritesStream.value.any((e) => e.toLowerCase().endsWith(filename));
     if (!isFavorite) {
       final currentFavorites = _favoritesStream.value;
-      final localPath = await _localStorage.downloadFile(url.convertToUrl());
-      if (localPath != null) {
+      try {
+        final localPath = await _localStorage.downloadFile(url.convertToUrl());
         currentFavorites.add(localPath);
         _favoritesStream.add(currentFavorites);
         // Update the current image stream to be the local file
         _imageStream.add(localPath);
+      } catch (e) {
+        log(e.toString());
       }
     }
   }
 
-  /// Remove a coffee image from the list of favorites
+  /// Remove a coffee image [url] from the list of favorites.
   Future<void> removeFavorite(String url) async {
     // Extract the filename from the URL to account for the file being
     // a URL or a local file
