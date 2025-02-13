@@ -81,9 +81,12 @@ class CoffeeView extends StatelessWidget {
                 ),
             ],
           ),
-          bottomSheet: state.showCarousel && hasFavorites
-              ? const _FavoritesCarouselWrapper()
-              : null,
+          bottomSheet: AnimatedSize(
+            duration: const Duration(milliseconds: 200),
+            child: state.showCarousel && hasFavorites
+                ? const _FavoritesCarouselWrapper()
+                : const SizedBox.shrink(),
+          ),
         );
       },
     );

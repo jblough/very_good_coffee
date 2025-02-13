@@ -38,22 +38,20 @@ class FavoriteButtonBloc
     emit(state.copyWith(favorites: event.favorites));
   }
 
-  void _onAddFavorite(
+  Future<void> _onAddFavorite(
     AddFavorite event,
     Emitter<FavoriteButtonState> emit,
-  ) {
-    _coffeeRepository.addFavorite(event.url).then((_) {
-      _coffeeRepository.loadFavorites();
-    });
+  ) async {
+    await _coffeeRepository.addFavorite(event.url);
+    await _coffeeRepository.loadFavorites();
   }
 
-  void _onRemoveFavorite(
+  Future<void> _onRemoveFavorite(
     RemoveFavorite event,
     Emitter<FavoriteButtonState> emit,
-  ) {
-    _coffeeRepository.removeFavorite(event.url).then((_) {
-      _coffeeRepository.loadFavorites();
-    });
+  ) async {
+    await _coffeeRepository.removeFavorite(event.url);
+    await _coffeeRepository.loadFavorites();
   }
 
   @override

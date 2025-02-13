@@ -13,17 +13,12 @@ class FavoritesCarouselBloc
     on<SetCurrentImage>(_onSetCurrentImage);
 
     _favoritesSubscription = coffeeRepository.favorites.listen((favorites) {
-      // emit(FavoritesCarouselButtonState(favorites: favorites));
       add(IncomingFavorites(favorites));
     });
   }
 
   final CoffeeRepository coffeeRepository;
   late final StreamSubscription<List<String>> _favoritesSubscription;
-
-  /*void setCurrentImage(String url) {
-    coffeeRepository.setCurrentImage(url);
-  }*/
 
   void _onFavorites(
     IncomingFavorites event,
