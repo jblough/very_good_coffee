@@ -5,7 +5,6 @@ import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:very_good_coffee/app/app.dart';
 import 'package:very_good_coffee/coffee/view/coffee_page.dart';
 import 'package:very_good_coffee/favorite_button/favorite_button.dart';
-import 'package:very_good_coffee/favorites_carousel_button/favorites_carousel_button.dart';
 
 class MockCoffeeRepository extends Mock implements CoffeeRepository {}
 
@@ -30,7 +29,6 @@ void main() {
         await tester.pump();
         expect(find.byType(CoffeePage), findsOneWidget);
         expect(find.byType(FavoriteButton), findsOneWidget);
-        expect(find.byType(FavoritesCarouselButton), findsOneWidget);
       });
     });
   });

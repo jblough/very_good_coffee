@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:very_good_coffee/favorites_carousel/bloc/favorites_carousel_event.dart';
 import 'package:very_good_coffee/favorites_carousel/favorites_carousel.dart';
 
 import '../../helpers/helpers.dart';
@@ -36,7 +35,6 @@ void main() {
       await tester.pumpApp(widget);
       expect(find.byType(CarouselView), findsOneWidget);
       expect(find.byType(Image), findsNWidgets(2));
-      expect(find.text('Close'), findsOneWidget);
     });
 
     testWidgets('should load image on tap', (tester) async {

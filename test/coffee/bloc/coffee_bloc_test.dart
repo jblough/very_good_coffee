@@ -18,6 +18,7 @@ void main() {
       setUp: () {
         when(() => repository.currentImage)
             .thenAnswer((_) => Stream.value(null));
+        when(() => repository.favorites).thenAnswer((_) => Stream.value([]));
         when(repository.refreshImage).thenAnswer((_) async {});
         when(repository.initialize).thenAnswer((_) async {});
       },
@@ -25,6 +26,21 @@ void main() {
       verify: (_) {
         verify(repository.refreshImage).called(1);
       },
+    );
+
+    blocTest<CoffeeBloc, CoffeeState>(
+      'should toggle',
+      build: () => CoffeeBloc(repository),
+      act: (bloc) => bloc.add(const ToggleCarousel()),
+      setUp: () {
+        when(() => repository.currentImage)
+            .thenAnswer((_) => Stream.value(null));
+        when(() => repository.favorites).thenAnswer((_) => Stream.value([]));
+        when(repository.refreshImage).thenAnswer((_) async {});
+        when(repository.initialize).thenAnswer((_) async {});
+      },
+      expect: () => [const CoffeeState(showCarousel: true)],
+      verify: (_) {},
     );
   });
 }

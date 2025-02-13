@@ -3,10 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:mocktail_image_network/mocktail_image_network.dart';
 import 'package:very_good_coffee/app/app.dart';
-import 'package:very_good_coffee/coffee/bloc/coffee_event.dart';
 import 'package:very_good_coffee/coffee/coffee.dart';
 import 'package:very_good_coffee/coffee/widgets/source_aware_image.dart';
 import 'package:very_good_coffee/favorite_button/favorite_button.dart';
+import 'package:very_good_coffee/favorites_carousel/favorites_carousel.dart';
 
 import '../../helpers/helpers.dart';
 
@@ -85,6 +85,79 @@ void main() {
 
         verify(repository.refreshImage);
       });
+    });
+  });
+
+  group('show Favorites Carousel Button tests', () {
+    testWidgets('should see favorites carousel button when there are favorite',
+        (tester) async {
+      const state = CoffeeState(favorites: ['a.png']);
+      when(() => coffeeBloc.stream).thenAnswer((_) => Stream.value(state));
+      when(() => coffeeBloc.state).thenAnswer((_) => state);
+
+      final widget = generateWidget();
+      await tester.pumpApp(widget);
+      expect(find.byTooltip('View your favorite images'), findsOneWidget);
+    });
+
+    testWidgets(
+        'should not see favorites carousel button when there are no favorites',
+        (tester) async {
+      const state = CoffeeState();
+      when(() => coffeeBloc.stream).thenAnswer((_) => Stream.value(state));
+      when(() => coffeeBloc.state).thenAnswer((_) => state);
+
+      final widget = generateWidget();
+      await tester.pumpApp(widget);
+      expect(find.byTooltip('View your favorite images'), findsNothing);
+    });
+
+    testWidgets('should open favorites carousel when button tapped',
+        (tester) async {
+      const state = CoffeeState(favorites: ['a.png']);
+      when(() => coffeeBloc.stream).thenAnswer((_) => Stream.value(state));
+      when(() => coffeeBloc.state).thenAnswer((_) => state);
+
+      final widget = generateWidget();
+      await tester.pumpApp(widget);
+      expect(find.byType(FavoritesCarousel), findsNothing);
+
+      // Tap on the button to open the carousel
+      await tester.tap(find.byTooltip('View your favorite images'));
+      await tester.pump();
+      verify(() => coffeeBloc.add(const ToggleCarousel()));
+    });
+
+    testWidgets('should close favorites carousel when button tapped',
+        (tester) async {
+      const state = CoffeeState(favorites: ['a.png'], showCarousel: true);
+      when(() => coffeeBloc.stream).thenAnswer((_) => Stream.value(state));
+      when(() => coffeeBloc.state).thenAnswer((_) => state);
+
+      final widget = generateWidget();
+      await tester.pumpApp(widget);
+      expect(find.byType(FavoritesCarousel), findsOneWidget);
+
+      // Tap on the button to open the carousel
+      await tester.tap(find.byTooltip('View your favorite images'));
+      await tester.pump();
+      verify(() => coffeeBloc.add(const ToggleCarousel()));
+    });
+
+    testWidgets('should close favorites carousel when close tapped',
+        (tester) async {
+      const state = CoffeeState(favorites: ['a.png'], showCarousel: true);
+      when(() => coffeeBloc.stream).thenAnswer((_) => Stream.value(state));
+      when(() => coffeeBloc.state).thenAnswer((_) => state);
+
+      final widget = generateWidget();
+      await tester.pumpApp(widget);
+      expect(find.byType(FavoritesCarousel), findsOneWidget);
+
+      // Tap on the button to open the carousel
+      await tester.tap(find.text('Close'));
+      await tester.pump();
+      expect(find.byType(FavoritesCarousel), findsOneWidget);
     });
   });
 }

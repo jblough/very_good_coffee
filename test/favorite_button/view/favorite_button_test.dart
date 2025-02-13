@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:very_good_coffee/favorite_button/bloc/favorite_button_event.dart';
 import 'package:very_good_coffee/favorite_button/favorite_button.dart';
 
 import '../../helpers/helpers.dart';
