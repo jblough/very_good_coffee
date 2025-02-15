@@ -1,10 +1,5 @@
-import 'package:equatable/equatable.dart';
-
-sealed class FavoritesCarouselEvent extends Equatable {
+sealed class FavoritesCarouselEvent {
   const FavoritesCarouselEvent();
-
-  @override
-  List<Object?> get props => [];
 }
 
 final class IncomingFavorites extends FavoritesCarouselEvent {

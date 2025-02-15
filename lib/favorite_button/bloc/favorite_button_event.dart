@@ -1,10 +1,5 @@
-import 'package:equatable/equatable.dart';
-
-sealed class FavoriteButtonEvent extends Equatable {
+sealed class FavoriteButtonEvent {
   const FavoriteButtonEvent();
-
-  @override
-  List<Object?> get props => [];
 }
 
 final class IncomingFavorites extends FavoriteButtonEvent {

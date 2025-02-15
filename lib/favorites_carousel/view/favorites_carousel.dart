@@ -8,15 +8,13 @@ import 'package:very_good_coffee/favorites_carousel/bloc/favorites_carousel_even
 import 'package:very_good_coffee/favorites_carousel/bloc/favorites_carousel_state.dart';
 
 class FavoritesCarousel extends StatelessWidget {
-  const FavoritesCarousel({super.key, this.bloc});
-
-  final FavoritesCarouselBloc? bloc;
+  const FavoritesCarousel({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<FavoritesCarouselBloc>(
       create: (context) =>
-          bloc ?? FavoritesCarouselBloc(context.read<CoffeeRepository>()),
+          FavoritesCarouselBloc(context.read<CoffeeRepository>()),
       child: const FavoritesCarouselView(),
     );
   }

@@ -10,16 +10,14 @@ import 'package:very_good_coffee/favorites_carousel/favorites_carousel.dart';
 import 'package:very_good_coffee/l10n/l10n.dart';
 
 class CoffeePage extends StatelessWidget {
-  const CoffeePage({super.key, this.bloc});
-
-  final CoffeeBloc? bloc;
+  const CoffeePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: BlocProvider<CoffeeBloc>(
         create: (context) =>
-            bloc ?? CoffeeBloc(context.read<CoffeeRepository>()),
+            CoffeeBloc(context.read<CoffeeRepository>()),
         child: const CoffeeView(),
       ),
     );

@@ -7,16 +7,14 @@ import 'package:very_good_coffee/favorite_button/bloc/favorite_button_state.dart
 import 'package:very_good_coffee/l10n/l10n.dart';
 
 class FavoriteButton extends StatelessWidget {
-  const FavoriteButton({required this.url, super.key, this.bloc});
+  const FavoriteButton({required this.url, super.key});
 
   final String url;
-  final FavoriteButtonBloc? bloc;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<FavoriteButtonBloc>(
-      create: (context) =>
-          bloc ?? FavoriteButtonBloc(context.read<CoffeeRepository>()),
+      create: (context) => FavoriteButtonBloc(context.read<CoffeeRepository>()),
       child: FavoriteButtonView(url: url),
     );
   }
