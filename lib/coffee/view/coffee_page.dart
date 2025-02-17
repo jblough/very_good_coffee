@@ -32,7 +32,6 @@ class CoffeeView extends StatelessWidget {
     return BlocBuilder<CoffeeBloc, CoffeeState>(
       builder: (_, state) {
         final url = state.imageUrl;
-        final hasFavorites = state.favorites.isNotEmpty;
         return Scaffold(
           body: Stack(
             children: [
@@ -64,7 +63,7 @@ class CoffeeView extends StatelessWidget {
                   onPressed: () => downloadNewImage(context),
                 ),
               ),
-              if (hasFavorites)
+              if (state.favorites.isNotEmpty)
                 Positioned(
                   bottom: 16,
                   left: 16,
@@ -81,7 +80,7 @@ class CoffeeView extends StatelessWidget {
           ),
           bottomSheet: AnimatedSize(
             duration: const Duration(milliseconds: 200),
-            child: state.showCarousel && hasFavorites
+            child: state.showCarousel
                 ? const _FavoritesCarouselWrapper()
                 : const SizedBox.shrink(),
           ),

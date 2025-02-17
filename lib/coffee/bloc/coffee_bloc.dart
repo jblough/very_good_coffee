@@ -31,7 +31,13 @@ class CoffeeBloc extends Bloc<CoffeeEvent, CoffeeState> {
   }
 
   void _onFavorites(IncomingFavorites event, Emitter<CoffeeState> emit) {
-    emit(state.copyWith(favorites: event.favorites));
+    emit(
+      state.copyWith(
+        favorites: event.favorites,
+        // Don't show the carousel if there aren't any favorites
+        showCarousel: event.favorites.isEmpty ? false : null,
+      ),
+    );
   }
 
   void _onRefreshImage(RefreshImage event, Emitter<CoffeeState> emit) {

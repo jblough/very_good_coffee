@@ -32,14 +32,17 @@ void main() {
       'should toggle',
       build: () => CoffeeBloc(repository),
       act: (bloc) => bloc.add(const ToggleCarousel()),
+      seed: () => const CoffeeState(favorites: ['a.png']),
       setUp: () {
         when(() => repository.currentImage)
             .thenAnswer((_) => Stream.value(null));
-        when(() => repository.favorites).thenAnswer((_) => Stream.value([]));
-        when(repository.refreshImage).thenAnswer((_) async {});
+        when(() => repository.favorites)
+            .thenAnswer((_) => Stream.value(['a.png']));
         when(repository.initialize).thenAnswer((_) async {});
       },
-      expect: () => [const CoffeeState(showCarousel: true)],
+      expect: () => [
+        const CoffeeState(favorites: ['a.png'], showCarousel: true)
+      ],
       verify: (_) {},
     );
   });
