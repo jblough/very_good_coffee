@@ -41,7 +41,7 @@ void main() {
         when(repository.initialize).thenAnswer((_) async {});
       },
       expect: () => [
-        const CoffeeState(favorites: ['a.png'], showCarousel: true)
+        const CoffeeState(favorites: ['a.png'], showCarousel: true),
       ],
       verify: (_) {},
     );
