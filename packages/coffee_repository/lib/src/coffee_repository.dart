@@ -71,11 +71,9 @@ class CoffeeRepository {
     final isFavorite =
         _favoritesStream.value.any((e) => e.toLowerCase().endsWith(filename));
     if (!isFavorite) {
-      final currentFavorites = _favoritesStream.value;
       try {
         final localPath = await _localStorage.downloadFile(url.convertToUrl());
-        currentFavorites.add(localPath);
-        _favoritesStream.add(currentFavorites);
+        _favoritesStream.add([..._favoritesStream.value, localPath]);
         // Update the current image stream to be the local file
         _imageStream.add(localPath);
       } catch (e) {
