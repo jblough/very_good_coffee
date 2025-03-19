@@ -1,6 +1,8 @@
+import 'package:coffee_repository/coffee_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:very_good_coffee/favorite_button/bloc/favorite_button_cubit.dart';
+import 'package:very_good_coffee/favorite_button/bloc/favorite_button_bloc.dart';
+import 'package:very_good_coffee/favorite_button/bloc/favorite_button_event.dart';
 import 'package:very_good_coffee/favorite_button/bloc/favorite_button_state.dart';
 import 'package:very_good_coffee/l10n/l10n.dart';
 
@@ -11,9 +13,23 @@ class FavoriteButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocProvider<FavoriteButtonBloc>(
+      create: (context) => FavoriteButtonBloc(context.read<CoffeeRepository>()),
+      child: FavoriteButtonView(url: url),
+    );
+  }
+}
+
+class FavoriteButtonView extends StatelessWidget {
+  const FavoriteButtonView({required this.url, super.key});
+
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = context.l10n;
 
-    return BlocBuilder<FavoriteButtonCubit, FavoriteButtonState>(
+    return BlocBuilder<FavoriteButtonBloc, FavoriteButtonState>(
       builder: (context, state) {
         final isFavorite = state.isFavorite();
         return FloatingActionButton(
@@ -24,11 +40,11 @@ class FavoriteButton extends StatelessWidget {
             isFavorite ? Icons.favorite : Icons.favorite_outline,
           ),
           onPressed: () {
-            final cubit = context.read<FavoriteButtonCubit>();
+            final bloc = context.read<FavoriteButtonBloc>();
             if (isFavorite) {
-              cubit.removeFavorite(url);
+              bloc.add(RemoveFavorite(url));
             } else {
-              cubit.addFavorite(url);
+              bloc.add(AddFavorite(url));
             }
           },
         );

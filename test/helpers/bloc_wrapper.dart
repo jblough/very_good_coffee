@@ -6,56 +6,27 @@ import 'package:mocktail/mocktail.dart';
 import 'package:very_good_coffee/coffee/coffee.dart';
 import 'package:very_good_coffee/favorite_button/favorite_button.dart';
 import 'package:very_good_coffee/favorites_carousel/favorites_carousel.dart';
-import 'package:very_good_coffee/favorites_carousel_button/favorites_carousel_button.dart';
 
 class MockCoffeeRepository extends Mock implements CoffeeRepository {}
 
-class MockCoffeeCubit extends MockCubit<CoffeeState> implements CoffeeCubit {}
+class MockCoffeeBloc extends MockBloc<CoffeeEvent, CoffeeState>
+    implements CoffeeBloc {}
 
-class MockFavoriteButtonCubit extends MockCubit<FavoriteButtonState>
-    implements FavoriteButtonCubit {}
+class MockFavoriteButtonBloc
+    extends MockBloc<FavoriteButtonEvent, FavoriteButtonState>
+    implements FavoriteButtonBloc {}
 
-class MockFavoritesCarouselButtonCubit
-    extends MockCubit<FavoritesCarouselButtonState>
-    implements FavoritesCarouselButtonCubit {}
-
-class MockFavoritesCarouselCubit extends MockCubit<FavoritesCarouselState>
-    implements FavoritesCarouselCubit {}
+class MockFavoritesCarouselBloc
+    extends MockBloc<FavoritesCarouselEvent, FavoritesCarouselState>
+    implements FavoritesCarouselBloc {}
 
 Widget addProviders(
   Widget child, {
   CoffeeRepository? coffeeRepository,
-  CoffeeCubit? coffeeCubit,
-  FavoriteButtonCubit? favoriteButtonCubit,
-  FavoritesCarouselCubit? favoritesCarouselCubit,
-  FavoritesCarouselButtonCubit? favoritesCarouselButtonCubit,
 }) {
   final repository = coffeeRepository ?? CoffeeRepository();
   return RepositoryProvider<CoffeeRepository>.value(
     value: repository,
-    child: MultiBlocProvider(
-      providers: [
-        BlocProvider<CoffeeCubit>(
-          create: (_) => coffeeCubit ?? CoffeeCubit(repository),
-          lazy: false,
-        ),
-        BlocProvider<FavoriteButtonCubit>(
-          create: (_) => favoriteButtonCubit ?? FavoriteButtonCubit(repository),
-          lazy: false,
-        ),
-        BlocProvider<FavoritesCarouselCubit>(
-          create: (_) =>
-              favoritesCarouselCubit ?? FavoritesCarouselCubit(repository),
-          lazy: false,
-        ),
-        BlocProvider<FavoritesCarouselButtonCubit>(
-          create: (_) =>
-              favoritesCarouselButtonCubit ??
-              FavoritesCarouselButtonCubit(repository),
-          lazy: false,
-        ),
-      ],
-      child: Scaffold(body: child),
-    ),
+    child: Scaffold(body: child),
   );
 }

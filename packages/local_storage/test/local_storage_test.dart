@@ -86,8 +86,10 @@ void main() {
           () async {
             final storage =
                 LocalStorage(subdirectory: 'subdir', client: client);
-            final local =
-                await storage.downloadFile('https://test.com/test.png');
+            await expectLater(
+              storage.downloadFile('https://test.com/test.png'),
+              throwsA(isA<FileDownloadException>()),
+            );
 
             // Check that the file was downloaded
             verify(() => client.get(Uri.parse('https://test.com/test.png')));
@@ -97,8 +99,6 @@ void main() {
 
             // Check that no attempt was made to write a file
             verifyNever(() => file.writeAsBytes(any()));
-
-            expect(local, isNull);
           },
           createDirectory: (String path) => directory,
           createFile: (String path) => file,
@@ -117,8 +117,11 @@ void main() {
           () async {
             final storage =
                 LocalStorage(subdirectory: 'subdir', client: client);
-            final local =
-                await storage.downloadFile('https://test.com/test.png');
+
+            await expectLater(
+              storage.downloadFile('https://test.com/test.png'),
+              throwsA(isA<FileSaveException>()),
+            );
 
             // Check that the file was downloaded
             verify(() => client.get(Uri.parse('https://test.com/test.png')));
@@ -128,8 +131,6 @@ void main() {
 
             // Check that no attempt was made to write a file
             verifyNever(() => file.writeAsBytes(any()));
-
-            expect(local, isNull);
           },
           createDirectory: (String path) => directory,
           createFile: (String path) => file,
@@ -149,8 +150,11 @@ void main() {
           () async {
             final storage =
                 LocalStorage(subdirectory: 'subdir', client: client);
-            final local =
-                await storage.downloadFile('https://test.com/test.png');
+
+            await expectLater(
+              storage.downloadFile('https://test.com/test.png'),
+              throwsA(isA<FileSaveException>()),
+            );
 
             // Check that the file was downloaded
             verify(() => client.get(Uri.parse('https://test.com/test.png')));
@@ -160,8 +164,6 @@ void main() {
 
             // Check that no attempt was made to write a file
             verify(() => file.writeAsBytes('image-content'.codeUnits));
-
-            expect(local, isNull);
           },
           createDirectory: (String path) => directory,
           createFile: (String path) => file,
@@ -247,9 +249,31 @@ void main() {
           () async {
             final storage =
                 LocalStorage(subdirectory: 'subdir', client: client);
-            await storage.removeFile('different-fake-directory/test-file');
+            await expectLater(
+              storage.removeFile('different-fake-directory/test-file'),
+              throwsA(isA<InvalidPathException>()),
+            );
 
             verifyNever(file.delete);
+          },
+          createDirectory: (String path) => directory,
+          createFile: (String path) => file,
+        );
+      });
+
+      test('should throw exception on deletion failure', () async {
+        when(file.delete).thenThrow(Exception('Unable to delete file'));
+
+        await IOOverrides.runZoned(
+          () async {
+            final storage =
+                LocalStorage(subdirectory: 'subdir', client: client);
+            await expectLater(
+              storage.removeFile('fake-directory/subdir/test-file'),
+              throwsA(isA<FileDeleteException>()),
+            );
+
+            verify(file.delete);
           },
           createDirectory: (String path) => directory,
           createFile: (String path) => file,

@@ -1,7 +1,8 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:very_good_coffee/favorite_button/bloc/favorite_button_cubit.dart';
+import 'package:very_good_coffee/favorite_button/bloc/favorite_button_bloc.dart';
+import 'package:very_good_coffee/favorite_button/bloc/favorite_button_event.dart';
 import 'package:very_good_coffee/favorite_button/bloc/favorite_button_state.dart';
 
 import '../../app/view/app_test.dart';
@@ -9,11 +10,11 @@ import '../../app/view/app_test.dart';
 void main() {
   final repository = MockCoffeeRepository();
 
-  group('FavoriteButtonCubit tests', () {
-    blocTest<FavoriteButtonCubit, FavoriteButtonState>(
+  group('FavoriteButtonBloc tests', () {
+    blocTest<FavoriteButtonBloc, FavoriteButtonState>(
       'should add favorite',
-      build: () => FavoriteButtonCubit(repository),
-      act: (cubit) => cubit.addFavorite('a.png'),
+      build: () => FavoriteButtonBloc(repository),
+      act: (bloc) => bloc.add(const AddFavorite('a.png')),
       setUp: () {
         when(() => repository.currentImage)
             .thenAnswer((_) => Stream.value(null));
@@ -28,10 +29,10 @@ void main() {
       },
     );
 
-    blocTest<FavoriteButtonCubit, FavoriteButtonState>(
+    blocTest<FavoriteButtonBloc, FavoriteButtonState>(
       'should remove favorite',
-      build: () => FavoriteButtonCubit(repository),
-      act: (cubit) => cubit.removeFavorite('a.png'),
+      build: () => FavoriteButtonBloc(repository),
+      act: (bloc) => bloc.add(const RemoveFavorite('a.png')),
       setUp: () {
         when(() => repository.currentImage)
             .thenAnswer((_) => Stream.value(null));

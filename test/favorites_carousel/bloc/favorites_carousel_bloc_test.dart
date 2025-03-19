@@ -8,11 +8,11 @@ import '../../app/view/app_test.dart';
 void main() {
   final repository = MockCoffeeRepository();
 
-  group('FavoritesCarouselCubit tests', () {
-    blocTest<FavoritesCarouselCubit, FavoritesCarouselState>(
+  group('FavoritesCarouselBloc tests', () {
+    blocTest<FavoritesCarouselBloc, FavoritesCarouselState>(
       'should set current image',
-      build: () => FavoritesCarouselCubit(repository),
-      act: (cubit) => cubit.setCurrentImage('a.png'),
+      build: () => FavoritesCarouselBloc(repository),
+      act: (bloc) => bloc.add(const SetCurrentImage('a.png')),
       setUp: () {
         when(() => repository.favorites).thenAnswer((_) => Stream.value([]));
       },
