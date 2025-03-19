@@ -16,8 +16,7 @@ class CoffeePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: BlocProvider<CoffeeBloc>(
-        create: (context) =>
-            CoffeeBloc(context.read<CoffeeRepository>()),
+        create: (context) => CoffeeBloc(context.read<CoffeeRepository>()),
         child: const CoffeeView(),
       ),
     );
