@@ -2,7 +2,7 @@ import 'package:coffee_repository/coffee_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:very_good_coffee/coffee/coffee.dart';
-import 'package:very_good_coffee/l10n/l10n.dart';
+import 'package:very_good_coffee/l10n/arb/app_localizations.dart';
 
 class App extends StatelessWidget {
   const App({required this.coffeeRepository, super.key});
